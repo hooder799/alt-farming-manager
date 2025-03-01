@@ -1,14 +1,3 @@
-Sure! Let’s implement the following features based on your requests:
-
-1. **Key Entry**: Ensure that users must enter the key to access the alt manager initially.
-2. **Smaller Alt Screens**: Make the alt frames smaller in size.
-3. **Dropdown Menu**: Add a dropdown to assign one of the alt screens as the "main screen", allowing only one alt to act as the main screen at a time. We will name alt screens as "Alt 1", "Alt 2", and "Alt 3", and the main screen as "Main Screen".
-
-### Updated Code:
-
-Here's the updated code that incorporates all the requested changes:
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -343,18 +332,3 @@ Here's the updated code that incorporates all the requested changes:
 </body>
 
 </html>
-```
-
-### Key Features Implemented:
-1. **Key Entry Required**: Users must enter the correct key to access the manager. 
-2. **Smaller Alt Frames**: The alt frames now have a smaller size (150px in height for the container and 100px for the iframe).
-3. **Dropdown for Main Screen Selection**:
-   - A dropdown menu is added to allow the user to select which alt iframe they want to set as the "main screen". 
-   - The selected alt frame gets a gold border to indicate it is the active main screen.
-
-### Behavior:
-- Only one screen can be set as the main screen at a given time.
-- The dropdown updates dynamically as alts are added or deleted.
-- When switching to an alt as the main screen, all other alt frames reset to their default styling.
-
-This implementation should meet your requirements effectively. If you need further enhancements or changes, feel free to let me know!
