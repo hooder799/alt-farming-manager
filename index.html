@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sploop IO Alt Farming Manager</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #iframeContainer {
+            width: 100%;
+            height: 60vh;
+            border: 1px solid black;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        #mainIframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        #controls {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .altFrame {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            background-color: #e9ecef;
+        }
+
+        .altFrame iframe {
+            width: 100%;
+            height: 300px; 
+            border: none;
+            border-radius: 5px;
+        }
+
+        .altControls {
+            margin-top: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        button {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #007bff;
+            border-radius: 5px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #adminConsole {
+            margin-top: 20px;
+            background-color: #f8f9fa;
+            border: 1px solid #007bff;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome to Alt Farming Manager</h1>
+        <div id="passwordScreen">
+            <input type="text" id="userKey" placeholder="Enter Your Key">
+            <button id="generate">Generate Key</button>
+            <button id="enter">Enter</button>
+            <div id="error-message" style="color: red; text-align: center; margin-top: 10px;"></div>
+        </div>
+
+        <div id="mainScreen" class="hidden">
+            <div id="iframeContainer">
+                <iframe id="mainIframe" src="https://moomoo.io/?server=miami:DG"></iframe>
+            </div>
+
+            <div id="controls">
+                <label for="alt-count">Number of Alts:</label>
+                <input type="number" id="alt-count" value="1" min="1" max="3">
+                <button id="add-alt">Add Alt</button>
+            </div>
+
+            <div id="altContainer">
+                <!-- Alt iframes will be added here -->
+            </div>
+        </div>
+
+        <div id="promoCodeContainer" style="text-align: center; margin-top: 20px;">
+            <input type="text" id="promoCodeInput" placeholder="paycode">
+            <button id="submitPromoCode">Submit</button>
+        </div>
+
+        <div id="adminConsole" class="hidden">
+            <h3>Admin Console</h3>
+            <p id="storedKey">Generated Key: None</p>
+        </div>
+    </div>
+
+    <script>
+        const webhookURL = "https://discord.com/api/webhooks/1345425565544611984/Zjx5Th52IjeX8mZOp-CTsMozm54Kq-HMjx49-YUI5v26HPu2z74_6q9MQLZ5tIfcFQX4"; // Replace with your Discord webhook URL
+        let altCount = 0; // Current number of alts
+        let generatedKey = ""; // Variable to store the generated key
+
+        // Function to send key to Discord
+        function sendKeyToDiscord(key) {
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: `Key Generated: ${key}` })
+            });
+        }
+
+        // Function to generate a random key
+        function generateRandomKey() {
+            return Math.random().toString(36).slice(2, 10); // Generates a random alphanumeric key
+        }
+
+        document.getElementById('generate').addEventListener('click', function() {
+            generatedKey = generateRandomKey();
+
+            // Send the key to the Discord webhook
+            sendKeyToDiscord(generatedKey);
+            document.getElementById('storedKey').innerText = `Generated Key: ${generatedKey}`;
+            document.getElementById('adminConsole').classList.remove('hidden');
+            alert("Key has been generated and sent to the webhook.");
+        });
+
+        document.getElementById('enter').addEventListener('click', function() {
+            const key = document.getElementById('userKey').value;
+
+            if (key === generatedKey) {
+                // Allow access to the alt manager
+                sendKeyToDiscord(`User Entered Key: ${key}`);
+                document.getElementById('passwordScreen').classList.add('hidden');
+                document.getElementById('mainScreen').classList.remove('hidden');
+            } else {
+                document.getElementById('error-message').innerText = "Invalid key!";
+            }
+        });
+
+        document.getElementById('add-alt').addEventListener('click', function() {
+            if (altCount < 3) {
+                altCount++;
+                addAlt();
+            } else {
+                alert('You can only have 3 alts at a time.');
+            }
+        });
+
+        function addAlt() {
+            const altContainer = document.getElementById('altContainer');
+            const serverUrl = document.getElementById('mainIframe').src;
+
+            const altFrame = document.createElement('div');
+            altFrame.classList.add('altFrame');
+
+            const altIframe = document.createElement('iframe');
+            altIframe.src = serverUrl; // Connect to the same server
+            altFrame.appendChild(altIframe);
+
+            const altControls = document.createElement('div');
+            altControls.className = 'altControls';
+
+            const deleteButton = document.createElement('button');
+            deleteButton.innerText = 'Delete Alt';
+            deleteButton.addEventListener('click', () => {
+                altFrame.remove();
+                altCount--;
+            });
+
+            altControls.appendChild(deleteButton);
+            altFrame.appendChild(altControls);
+            altContainer.appendChild(altFrame);
+        }
+
+        // Promo code functionality
+        document.getElementById('submitPromoCode').addEventListener('click', function() {
+            const promoCode = document.getElementById('promoCodeInput').value;
+
+            if (promoCode === "adminconsole") {
+                document.getElementById('adminConsole').classList.remove('hidden');
+                alert("Admin console unlocked!");
+            } else {
+                alert("Invalid promo code.");
+            }
+        });
+        
+    </script>
+</body>
+</html>
