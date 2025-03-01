@@ -32,7 +32,7 @@
 
         #iframeContainer {
             width: 100%;
-            height: 60vh;
+            height: 50vh; /* Reduced height */
             border: 1px solid black;
             margin: 20px 0;
             overflow: hidden;
@@ -63,7 +63,7 @@
 
         .altFrame iframe {
             width: 100%;
-            height: 300px; 
+            height: 200px; /* Reduced height */
             border: none;
             border-radius: 5px;
         }
@@ -80,7 +80,7 @@
             border: 1px solid #007bff;
             border-radius: 5px;
             width: 80%;
-            max-width: 300px;
+            max-width: 200px; /* Reduced max-width */
         }
 
         button {
@@ -104,6 +104,10 @@
             padding: 10px;
             border-radius: 5px;
         }
+
+        .fullscreen-button {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -121,6 +125,7 @@
                 <iframe id="mainIframe" src="https://moomoo.io/?server=miami:DG"></iframe>
             </div>
 
+            <button id="toggleFullscreen">Toggle Fullscreen</button>
             <div id="controls">
                 <label for="alt-count">Number of Alts:</label>
                 <input type="number" id="alt-count" value="1" min="1" max="3">
@@ -215,7 +220,23 @@
                 altCount--;
             });
 
+            const toggleAltFullscreen = document.createElement('button');
+            toggleAltFullscreen.innerText = 'Toggle Alt Fullscreen';
+            toggleAltFullscreen.className = "fullscreen-button";
+            toggleAltFullscreen.addEventListener('click', () => {
+                if (altIframe.requestFullscreen) {
+                    altIframe.requestFullscreen();
+                } else if (altIframe.mozRequestFullScreen) {
+                    altIframe.mozRequestFullScreen(); // Firefox
+                } else if (altIframe.webkitRequestFullscreen) {
+                    altIframe.webkitRequestFullscreen(); // Chrome, Safari and Opera
+                } else if (altIframe.msRequestFullscreen) {
+                    altIframe.msRequestFullscreen(); // IE/Edge
+                }
+            });
+
             altControls.appendChild(deleteButton);
+            altControls.appendChild(toggleAltFullscreen);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
         }
@@ -232,6 +253,23 @@
             }
         });
         
+        // Main iframe fullscreen toggle
+        document.getElementById('toggleFullscreen').addEventListener('click', function() {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                const mainIframe = document.getElementById('mainIframe');
+                if (mainIframe.requestFullscreen) {
+                    mainIframe.requestFullscreen();
+                } else if (mainIframe.mozRequestFullScreen) {
+                    mainIframe.mozRequestFullScreen(); // Firefox
+                } else if (mainIframe.webkitRequestFullscreen) {
+                    mainIframe.webkitRequestFullscreen(); // Chrome, Safari and Opera
+                } else if (mainIframe.msRequestFullscreen) {
+                    mainIframe.msRequestFullscreen(); // IE/Edge
+                }
+            }
+        });
     </script>
 </body>
 </html>
