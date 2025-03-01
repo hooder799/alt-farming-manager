@@ -24,31 +24,29 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding: 20px;
-            margin-top: 20px; /* Spacing from the top */
-            transition: all 0.3s ease; /* Smooth transitions when adding/removing elements */
-            overflow: hidden; /* Hide overflow */
+            margin-top: 20px;
         }
 
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 20px; /* Add margin below the title */
+            margin-bottom: 20px;
         }
 
         #iframeContainer {
             width: 100%;
-            height: 40vh; /* Maintain the height */
-            border: 1px solid #007bff; /* Blue border for better visibility */
+            height: 30vh; /* Reduced height for main screen */
+            border: 1px solid #007bff;
             margin: 20px 0;
             overflow: hidden;
-            border-radius: 5px; /* Rounded corners */
+            border-radius: 5px;
         }
 
         #mainIframe {
             width: 100%;
             height: 100%;
             border: none;
-            border-radius: 5px; /* Matching rounded corners */
+            border-radius: 5px;
         }
 
         #controls {
@@ -61,17 +59,17 @@
             flex-direction: column;
             align-items: center;
             margin: 10px auto;
-            border: 1px solid #007bff; /* Blue border for visibility */
+            border: 1px solid #007bff;
             border-radius: 5px;
             padding: 10px;
             width: 100%;
-            background-color: #f8f9fa; /* Slightly darker background for alternates */
-            height: 150px; /* Set a smaller height for alt screens */
+            background-color: #f8f9fa;
+            height: 120px; /* Smaller height for alt frames */
         }
 
         .altFrame iframe {
             width: 100%;
-            height: 100px; /* Smaller height for alt iframes */
+            height: 80px; /* Smaller height for alt iframes */
             border: none;
             border-radius: 5px;
         }
@@ -83,12 +81,12 @@
         input[type="text"],
         input[type="number"],
         button {
-            padding: 10px;
+            padding: 8px;
             margin: 5px;
             border: 1px solid #007bff;
             border-radius: 5px;
             width: 80%;
-            max-width: 200px;
+            max-width: 180px; /* Adjust input width */
         }
 
         button {
@@ -105,7 +103,7 @@
             display: none;
         }
 
-        #adminconsole { /* Changed ID for admin console */
+        #adminconsole { 
             margin-top: 20px;
             background-color: #f8f9fa;
             border: 1px solid #007bff;
@@ -113,26 +111,21 @@
             border-radius: 5px;
         }
 
-        .fullscreen-button {
-            margin-top: 10px;
-        }
-
-        /* Additional styling */
         #promoCodeContainer {
             display: flex;
             justify-content: center;
             margin-top: 20px;
         }
 
-        #altContainer {
-            max-height: 400px; /* Extend height for alt container */
-            overflow-y: auto; /* Enable vertical scrolling for alts */
-            margin-top: 10px; /* Adding some space above the altContainer */
-        }
-
         #altDropdown {
             margin-top: 10px;
             margin-bottom: 20px; /* Adding space below dropdown */
+        }
+
+        #altContainer {
+            max-height: 400px; /* Set height for alt container */
+            overflow-y: auto; /* Enable vertical scrolling for alts */
+            margin-top: 10px; /* Adding some space above the altContainer */
         }
     </style>
 </head>
@@ -162,7 +155,11 @@
             <div id="altDropdown">
                 <label for="main-selector">Select Main Screen:</label>
                 <select id="main-selector">
-                    <option value="" disabled selected>Select an Alt as Main Screen</option>
+                    <option value="" disabled selected>Select Main Screen</option>
+                    <option value="main">Main Screen</option>
+                    <option value="alt1">Alt 1</option>
+                    <option value="alt2">Alt 2</option>
+                    <option value="alt3">Alt 3</option>
                 </select>
             </div>
 
@@ -176,7 +173,7 @@
             <button id="submitPromoCode">Submit</button>
         </div>
 
-        <div id="adminconsole" class="hidden"> <!-- Changed ID here -->
+        <div id="adminconsole" class="hidden">
             <h3>Admin Console</h3>
             <p id="storedKey">Generated Key: None</p>
         </div>
@@ -186,6 +183,7 @@
         const webhookURL = "https://discord.com/api/webhooks/1345425565544611984/Zjx5Th52IjeX8mZOp-CTsMozm54Kq-HMjx49-YUI5v26HPu2z74_6q9MQLZ5tIfcFQX4"; // Your Discord webhook URL
         let altCount = 0; // Current number of alts
         let generatedKey = ""; // Variable to store the generated key
+        const altData = []; // Array to track alt data
 
         // Function to send key to Discord
         function sendKeyToDiscord(key) {
@@ -203,8 +201,6 @@
 
         document.getElementById('generate').addEventListener('click', function () {
             generatedKey = generateRandomKey();
-
-            // Send the key to the Discord webhook
             sendKeyToDiscord(generatedKey);
             document.getElementById('storedKey').innerText = `Generated Key: ${generatedKey}`;
             alert("Key has been generated and sent to the webhook.");
@@ -212,13 +208,11 @@
 
         document.getElementById('enter').addEventListener('click', function () {
             const key = document.getElementById('userKey').value;
-
-            // Allow access to the alt manager if the entered key matches the generated key
             if (key === generatedKey) {
                 sendKeyToDiscord(`User Entered Key: ${key}`);
                 document.getElementById('passwordScreen').classList.add('hidden');
                 document.getElementById('mainScreen').classList.remove('hidden');
-                document.getElementById('adminconsole').classList.add('hidden'); // Hide admin console when entering main screen
+                document.getElementById('adminconsole').classList.add('hidden');
             } else {
                 document.getElementById('error-message').innerText = "Invalid key!";
             }
@@ -255,54 +249,56 @@
                 updateMainSelector(); // Update dropdown when an alt is deleted
             });
 
-            const toggleAltFullscreen = document.createElement('button');
-            toggleAltFullscreen.innerText = 'Toggle Alt Fullscreen';
-            toggleAltFullscreen.className = "fullscreen-button";
-            toggleAltFullscreen.addEventListener('click', () => {
-                if (altIframe.requestFullscreen) {
-                    altIframe.requestFullscreen();
-                } else if (altIframe.mozRequestFullScreen) {
-                    altIframe.mozRequestFullScreen(); // Firefox
-                } else if (altIframe.webkitRequestFullscreen) {
-                    altIframe.webkitRequestFullscreen(); // Chrome, Safari and Opera
-                } else if (altIframe.msRequestFullscreen) {
-                    altIframe.msRequestFullscreen(); // IE/Edge
-                }
-            });
-
             altControls.appendChild(deleteButton);
-            altControls.appendChild(toggleAltFullscreen);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
 
-            // Add this alt to the dropdown
+            // Store alt data
+            altData.push(altFrame);
+            updateMainSelector(); // Update dropdown
+        }
+
+        // Update dropdown options
+        function updateMainSelector() {
             const mainSelector = document.getElementById('main-selector');
-            const option = document.createElement('option');
-            option.value = `alt${altCount}`;
-            option.innerText = `Alt ${altCount}`;
-            mainSelector.appendChild(option);
+            mainSelector.innerHTML = `<option value="" disabled selected>Select Main Screen</option>`;
+            mainSelector.innerHTML += `<option value="main">Main Screen</option>`;
+            altData.forEach((_, index) => {
+                mainSelector.innerHTML += `<option value="alt${index + 1}">Alt ${index + 1}</option>`;
+            });
         }
 
         // Main Screen Selection
         document.getElementById('main-selector').addEventListener('change', function () {
-            // Handle changing the main screen
             const selectedValue = this.value;
             const altFrames = document.getElementsByClassName('altFrame');
 
-            // Reset all alt frames to normal and only the selected one will act as main
-            Array.from(altFrames).forEach((frame, index) => {
-                if (selectedValue === `alt${index + 1}`) {
-                    frame.style.borderColor = 'gold'; // Highlighting the main screen
-                } else {
-                    frame.style.borderColor = '#007bff'; // Resetting border color
+            // Reset all alt frames to normal and position only the selected one at the top
+            const tempAltData = [...altData]; // Create a copy of the current data
+
+            if (selectedValue === "main") {
+                // Logic for when the main screen is selected
+                return; // Do nothing if "Main Screen" is selected
+            }
+
+            if (selectedValue) {
+                const selectedAltIndex = parseInt(selectedValue.replace('alt', '')) - 1; // Get the index of the selected alt
+                const selectedAlt = tempAltData.splice(selectedAltIndex, 1)[0]; // Remove the selected alt from the array
+                tempAltData.unshift(selectedAlt); // Add it to the top of the array
+                
+                // Clear altContainer and re-add frames in order
+                while (altContainer.firstChild) {
+                    altContainer.removeChild(altContainer.firstChild);
                 }
-            });
+                tempAltData.forEach(alt => {
+                    altContainer.appendChild(alt);
+                });
+            }
         });
 
         // Promo code functionality
         document.getElementById('submitPromoCode').addEventListener('click', function () {
             const promoCode = document.getElementById('promoCodeInput').value;
-
             if (promoCode === generatedKey) {
                 document.getElementById('adminconsole').classList.remove('hidden');
                 alert("Admin console unlocked!");
