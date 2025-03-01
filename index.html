@@ -9,10 +9,10 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background-color: #e9ecef; /* Light gray background for better aesthetics */
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Changed to flex-start to keep the content at the top */
+            align-items: flex-start;
             height: 100vh;
             flex-direction: column;
         }
@@ -24,25 +24,31 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding: 20px;
+            margin-top: 20px; /* Spacing from the top */
+            transition: all 0.3s ease; /* Smooth transitions when adding/removing elements */
+            overflow: hidden; /* Hide overflow */
         }
 
         h1 {
             text-align: center;
             color: #333;
+            margin-bottom: 20px; /* Add margin below the title */
         }
 
         #iframeContainer {
             width: 100%;
-            height: 50vh;
-            border: 1px solid black;
+            height: 50vh; /* Maintain the height */
+            border: 1px solid #007bff; /* Blue border for better visibility */
             margin: 20px 0;
             overflow: hidden;
+            border-radius: 5px; /* Rounded corners */
         }
 
         #mainIframe {
             width: 100%;
             height: 100%;
             border: none;
+            border-radius: 5px; /* Matching rounded corners */
         }
 
         #controls {
@@ -55,11 +61,11 @@
             flex-direction: column;
             align-items: center;
             margin: 10px auto;
-            border: 1px solid #ccc;
+            border: 1px solid #007bff; /* Blue border for visibility */
             border-radius: 5px;
             padding: 10px;
             width: 100%;
-            background-color: #e9ecef;
+            background-color: #f8f9fa; /* Slightly darker background for alternates */
         }
 
         .altFrame iframe {
@@ -109,6 +115,13 @@
         .fullscreen-button {
             margin-top: 10px;
         }
+
+        /* Additional styling */
+        #promoCodeContainer {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
     </style>
 </head>
 
@@ -139,8 +152,8 @@
             </div>
         </div>
 
-        <div id="promoCodeContainer" style="text-align: center; margin-top: 20px;">
-            <input type="text" id="promoCodeInput" placeholder="Promo Code for Admin Console">
+        <div id="promoCodeContainer">
+            <input type="text" id="promoCodeInput" placeholder="Code for Admin Console">
             <button id="submitPromoCode">Submit</button>
         </div>
 
@@ -151,7 +164,7 @@
     </div>
 
     <script>
-        const webhookURL = "https://discord.com/api/webhooks/1345425565544611984/Zjx5Th52IjeX8mZOp-CTsMozm54Kq-HMjx49-YUI5v26HPu2z74_6q9MQLZ5tIfcFQX4"; // Replace with your Discord webhook URL
+        const webhookURL = "https://discord.com/api/webhooks/1345425565544611984/Zjx5Th52IjeX8mZOp-CTsMozm54Kq-HMjx49-YUI5v26HPu2z74_6q9MQLZ5tIfcFQX4"; // Your Discord webhook URL
         let altCount = 0; // Current number of alts
         let generatedKey = ""; // Variable to store the generated key
 
@@ -175,18 +188,18 @@
             // Send the key to the Discord webhook
             sendKeyToDiscord(generatedKey);
             document.getElementById('storedKey').innerText = `Generated Key: ${generatedKey}`;
-            document.getElementById('adminConsole').classList.remove('hidden');
             alert("Key has been generated and sent to the webhook.");
         });
 
         document.getElementById('enter').addEventListener('click', function () {
             const key = document.getElementById('userKey').value;
 
+            // Allow access to the alt manager if the entered key matches the generated key
             if (key === generatedKey) {
-                // Allow access to the alt manager
                 sendKeyToDiscord(`User Entered Key: ${key}`);
                 document.getElementById('passwordScreen').classList.add('hidden');
                 document.getElementById('mainScreen').classList.remove('hidden');
+                document.getElementById('adminConsole').classList.add('hidden'); // Hide admin console when entering main screen
             } else {
                 document.getElementById('error-message').innerText = "Invalid key!";
             }
@@ -220,7 +233,6 @@
             deleteButton.addEventListener('click', () => {
                 altFrame.remove();
                 altCount--;
-                adjustMainIframePosition();
             });
 
             const toggleAltFullscreen = document.createElement('button');
@@ -242,19 +254,13 @@
             altControls.appendChild(toggleAltFullscreen);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
-            adjustMainIframePosition(); // Update the position of the main iframe
-        }
-
-        function adjustMainIframePosition() {
-            const mainIframeContainer = document.getElementById('iframeContainer');
-            mainIframeContainer.scrollIntoView({ behavior: 'smooth' });
         }
 
         // Promo code functionality
         document.getElementById('submitPromoCode').addEventListener('click', function () {
             const promoCode = document.getElementById('promoCodeInput').value;
 
-            if (promoCode === "adminconsole") {
+            if (promoCode === generatedKey) {
                 document.getElementById('adminConsole').classList.remove('hidden');
                 alert("Admin console unlocked!");
             } else {
