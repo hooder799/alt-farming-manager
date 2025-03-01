@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +12,7 @@
             background-color: #f4f4f4;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Changed to flex-start to keep the content at the top */
             height: 100vh;
             flex-direction: column;
         }
@@ -32,7 +33,7 @@
 
         #iframeContainer {
             width: 100%;
-            height: 50vh; /* Reduced height */
+            height: 50vh;
             border: 1px solid black;
             margin: 20px 0;
             overflow: hidden;
@@ -63,7 +64,7 @@
 
         .altFrame iframe {
             width: 100%;
-            height: 200px; /* Reduced height */
+            height: 200px;
             border: none;
             border-radius: 5px;
         }
@@ -80,7 +81,7 @@
             border: 1px solid #007bff;
             border-radius: 5px;
             width: 80%;
-            max-width: 200px; /* Reduced max-width */
+            max-width: 200px;
         }
 
         button {
@@ -110,6 +111,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Welcome to Alt Farming Manager</h1>
@@ -138,7 +140,7 @@
         </div>
 
         <div id="promoCodeContainer" style="text-align: center; margin-top: 20px;">
-            <input type="text" id="promoCodeInput" placeholder="paycode">
+            <input type="text" id="promoCodeInput" placeholder="Promo Code for Admin Console">
             <button id="submitPromoCode">Submit</button>
         </div>
 
@@ -167,7 +169,7 @@
             return Math.random().toString(36).slice(2, 10); // Generates a random alphanumeric key
         }
 
-        document.getElementById('generate').addEventListener('click', function() {
+        document.getElementById('generate').addEventListener('click', function () {
             generatedKey = generateRandomKey();
 
             // Send the key to the Discord webhook
@@ -177,7 +179,7 @@
             alert("Key has been generated and sent to the webhook.");
         });
 
-        document.getElementById('enter').addEventListener('click', function() {
+        document.getElementById('enter').addEventListener('click', function () {
             const key = document.getElementById('userKey').value;
 
             if (key === generatedKey) {
@@ -190,7 +192,7 @@
             }
         });
 
-        document.getElementById('add-alt').addEventListener('click', function() {
+        document.getElementById('add-alt').addEventListener('click', function () {
             if (altCount < 3) {
                 altCount++;
                 addAlt();
@@ -218,6 +220,7 @@
             deleteButton.addEventListener('click', () => {
                 altFrame.remove();
                 altCount--;
+                adjustMainIframePosition();
             });
 
             const toggleAltFullscreen = document.createElement('button');
@@ -239,10 +242,16 @@
             altControls.appendChild(toggleAltFullscreen);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
+            adjustMainIframePosition(); // Update the position of the main iframe
+        }
+
+        function adjustMainIframePosition() {
+            const mainIframeContainer = document.getElementById('iframeContainer');
+            mainIframeContainer.scrollIntoView({ behavior: 'smooth' });
         }
 
         // Promo code functionality
-        document.getElementById('submitPromoCode').addEventListener('click', function() {
+        document.getElementById('submitPromoCode').addEventListener('click', function () {
             const promoCode = document.getElementById('promoCodeInput').value;
 
             if (promoCode === "adminconsole") {
@@ -252,9 +261,9 @@
                 alert("Invalid promo code.");
             }
         });
-        
+
         // Main iframe fullscreen toggle
-        document.getElementById('toggleFullscreen').addEventListener('click', function() {
+        document.getElementById('toggleFullscreen').addEventListener('click', function () {
             if (document.fullscreenElement) {
                 document.exitFullscreen();
             } else {
@@ -272,4 +281,5 @@
         });
     </script>
 </body>
+
 </html>
