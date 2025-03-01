@@ -104,7 +104,7 @@
             display: none;
         }
 
-        #adminConsole {
+        #adminconsole { /* Changed ID for admin console */
             margin-top: 20px;
             background-color: #f8f9fa;
             border: 1px solid #007bff;
@@ -121,6 +121,11 @@
             display: flex;
             justify-content: center;
             margin-top: 20px;
+        }
+
+        #altContainer {
+            max-height: 400px; /* Extend height for alt container */
+            overflow-y: auto; /* Enable vertical scrolling for alts */
         }
     </style>
 </head>
@@ -157,7 +162,7 @@
             <button id="submitPromoCode">Submit</button>
         </div>
 
-        <div id="adminConsole" class="hidden">
+        <div id="adminconsole" class="hidden"> <!-- Changed ID here -->
             <h3>Admin Console</h3>
             <p id="storedKey">Generated Key: None</p>
         </div>
@@ -199,7 +204,7 @@
                 sendKeyToDiscord(`User Entered Key: ${key}`);
                 document.getElementById('passwordScreen').classList.add('hidden');
                 document.getElementById('mainScreen').classList.remove('hidden');
-                document.getElementById('adminConsole').classList.add('hidden'); // Hide admin console when entering main screen
+                document.getElementById('adminconsole').classList.add('hidden'); // Hide admin console when entering main screen
             } else {
                 document.getElementById('error-message').innerText = "Invalid key!";
             }
@@ -261,7 +266,7 @@
             const promoCode = document.getElementById('promoCodeInput').value;
 
             if (promoCode === generatedKey) {
-                document.getElementById('adminConsole').classList.remove('hidden');
+                document.getElementById('adminconsole').classList.remove('hidden');
                 alert("Admin console unlocked!");
             } else {
                 alert("Invalid promo code.");
