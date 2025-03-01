@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,10 +8,10 @@
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #e9ecef; /* Light gray background for better aesthetics */
+            background-color: #f4f4f4;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
+            align-items: center;
             height: 100vh;
             flex-direction: column;
         }
@@ -24,34 +23,36 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding: 20px;
-            margin-top: 20px;
+            position: relative;
         }
 
         h1 {
             text-align: center;
             color: #333;
-            margin-bottom: 20px;
         }
+
+        .screen {
+            display: none; /* Only one screen visible at a time */
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            border-radius: 8px;
+            overflow: hidden; /* Allows for full-screen capability */
+        }
+
+        .mainScreen { border: 2px solid #007bff; }
+        .altScreen1 { border: 2px solid #28a745; }
+        .altScreen2 { border: 2px solid #dc3545; }
+        .altScreen3 { border: 2px solid #ffc107; }
 
         #iframeContainer {
             width: 100%;
-            height: 30vh; /* Reduced height for main screen */
-            border: 1px solid #007bff;
+            height: 60vh;
+            border: none;
             margin: 20px 0;
             overflow: hidden;
-            border-radius: 5px;
-        }
-
-        #mainIframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 5px;
-        }
-
-        #controls {
-            text-align: center;
-            margin-top: 10px;
         }
 
         .altFrame {
@@ -59,17 +60,16 @@
             flex-direction: column;
             align-items: center;
             margin: 10px auto;
-            border: 1px solid #007bff;
+            border: 1px solid #ccc;
             border-radius: 5px;
             padding: 10px;
             width: 100%;
-            background-color: #f8f9fa;
-            height: 120px; /* Smaller height for alt frames */
+            background-color: #e9ecef;
         }
 
         .altFrame iframe {
             width: 100%;
-            height: 80px; /* Smaller height for alt iframes */
+            height: 300px; 
             border: none;
             border-radius: 5px;
         }
@@ -81,12 +81,12 @@
         input[type="text"],
         input[type="number"],
         button {
-            padding: 8px;
+            padding: 10px;
             margin: 5px;
             border: 1px solid #007bff;
             border-radius: 5px;
             width: 80%;
-            max-width: 180px; /* Adjust input width */
+            max-width: 300px;
         }
 
         button {
@@ -103,87 +103,80 @@
             display: none;
         }
 
-        #adminconsole { 
+        #adminConsole {
             margin-top: 20px;
             background-color: #f8f9fa;
             border: 1px solid #007bff;
             padding: 10px;
             border-radius: 5px;
         }
-
-        #promoCodeContainer {
-            display: flex;
-            justify-content: center;
-            margin-top: 20px;
-        }
-
-        #altDropdown {
-            margin-top: 10px;
-            margin-bottom: 20px; /* Adding space below dropdown */
-        }
-
-        #altContainer {
-            max-height: 400px; /* Set height for alt container */
-            overflow-y: auto; /* Enable vertical scrolling for alts */
-            margin-top: 10px; /* Adding some space above the altContainer */
-        }
     </style>
 </head>
-
 <body>
     <div class="container">
         <h1>Welcome to Alt Farming Manager</h1>
-        <div id="passwordScreen">
+
+        <div id="passwordScreen" class="screen">
             <input type="text" id="userKey" placeholder="Enter Your Key">
             <button id="generate">Generate Key</button>
             <button id="enter">Enter</button>
             <div id="error-message" style="color: red; text-align: center; margin-top: 10px;"></div>
         </div>
 
-        <div id="mainScreen" class="hidden">
+        <div id="mainScreen" class="screen mainScreen hidden">
             <div id="iframeContainer">
                 <iframe id="mainIframe" src="https://moomoo.io/?server=miami:DG"></iframe>
             </div>
-
-            <button id="toggleFullscreen">Toggle Fullscreen</button>
             <div id="controls">
                 <label for="alt-count">Number of Alts:</label>
                 <input type="number" id="alt-count" value="1" min="1" max="3">
                 <button id="add-alt">Add Alt</button>
             </div>
+            <div id="altContainer"></div>
+        </div>
 
-            <div id="altDropdown">
-                <label for="main-selector">Select Main Screen:</label>
-                <select id="main-selector">
-                    <option value="" disabled selected>Select Main Screen</option>
-                    <option value="main">Main Screen</option>
-                    <option value="alt1">Alt 1</option>
-                    <option value="alt2">Alt 2</option>
-                    <option value="alt3">Alt 3</option>
-                </select>
-            </div>
-
-            <div id="altContainer">
-                <!-- Alt iframes will be added here -->
+        <div id="alt1" class="screen altScreen1 hidden">
+            <h2>Alt 1</h2>
+            <div id="altIframe1" class="altFrame">
+                <iframe id="iframeAlt1" src="https://moomoo.io/?server=miami:DG"></iframe>
+            <div>
+                <button onclick="toggleFullScreen('iframeAlt1')">Toggle Fullscreen</button>
             </div>
         </div>
 
-        <div id="promoCodeContainer">
-            <input type="text" id="promoCodeInput" placeholder="Code for Admin Console">
+        <div id="alt2" class="screen altScreen2 hidden">
+            <h2>Alt 2</h2>
+            <div id="altIframe2" class="altFrame">
+                <iframe id="iframeAlt2" src="https://moomoo.io/?server=miami:DG"></iframe>
+            <div>
+                <button onclick="toggleFullScreen('iframeAlt2')">Toggle Fullscreen</button>
+            </div>
+        </div>
+
+        <div id="alt3" class="screen altScreen3 hidden">
+            <h2>Alt 3</h2>
+            <div id="altIframe3" class="altFrame">
+                <iframe id="iframeAlt3" src="https://moomoo.io/?server=miami:DG"></iframe>
+            <div>
+                <button onclick="toggleFullScreen('iframeAlt3')">Toggle Fullscreen</button>
+            </div>
+        </div>
+
+        <div id="promoCodeContainer" style="text-align: center; margin-top: 20px;">
+            <input type="text" id="promoCodeInput" placeholder="paycode">
             <button id="submitPromoCode">Submit</button>
         </div>
 
-        <div id="adminconsole" class="hidden">
+        <div id="adminConsole" class="hidden">
             <h3>Admin Console</h3>
             <p id="storedKey">Generated Key: None</p>
         </div>
     </div>
 
     <script>
-        const webhookURL = "https://discord.com/api/webhooks/1345425565544611984/Zjx5Th52IjeX8mZOp-CTsMozm54Kq-HMjx49-YUI5v26HPu2z74_6q9MQLZ5tIfcFQX4"; // Your Discord webhook URL
+        const webhookURL = "https://discord.com/api/webhooks/1345425565544611984/Zjx5Th52IjeX8mZOp-CTsMozm54Kq-HMjx49-YUI5v26HPu2z74_6q9MQLZ5tIfcFQX4"; // Replace with your Discord webhook URL
         let altCount = 0; // Current number of alts
         let generatedKey = ""; // Variable to store the generated key
-        const altData = []; // Array to track alt data
 
         // Function to send key to Discord
         function sendKeyToDiscord(key) {
@@ -199,132 +192,73 @@
             return Math.random().toString(36).slice(2, 10); // Generates a random alphanumeric key
         }
 
-        document.getElementById('generate').addEventListener('click', function () {
+        document.getElementById('generate').addEventListener('click', function() {
             generatedKey = generateRandomKey();
+
+            // Send the key to the Discord webhook
             sendKeyToDiscord(generatedKey);
             document.getElementById('storedKey').innerText = `Generated Key: ${generatedKey}`;
+            document.getElementById('adminConsole').classList.remove('hidden');
             alert("Key has been generated and sent to the webhook.");
         });
 
-        document.getElementById('enter').addEventListener('click', function () {
+        document.getElementById('enter').addEventListener('click', function() {
             const key = document.getElementById('userKey').value;
+
             if (key === generatedKey) {
+                // Allow access to the alt manager
                 sendKeyToDiscord(`User Entered Key: ${key}`);
                 document.getElementById('passwordScreen').classList.add('hidden');
                 document.getElementById('mainScreen').classList.remove('hidden');
-                document.getElementById('adminconsole').classList.add('hidden');
             } else {
                 document.getElementById('error-message').innerText = "Invalid key!";
             }
         });
 
-        document.getElementById('add-alt').addEventListener('click', function () {
+        document.getElementById('add-alt').addEventListener('click', function() {
             if (altCount < 3) {
                 altCount++;
-                addAlt();
+                switch (altCount) {
+                    case 1:
+                        document.getElementById('alt1').classList.remove('hidden');
+                        break;
+                    case 2:
+                        document.getElementById('alt2').classList.remove('hidden');
+                        break;
+                    case 3:
+                        document.getElementById('alt3').classList.remove('hidden');
+                        break;
+                }
             } else {
                 alert('You can only have 3 alts at a time.');
             }
         });
 
-        function addAlt() {
-            const altContainer = document.getElementById('altContainer');
-            const serverUrl = document.getElementById('mainIframe').src;
-
-            const altFrame = document.createElement('div');
-            altFrame.classList.add('altFrame');
-
-            const altIframe = document.createElement('iframe');
-            altIframe.src = serverUrl; // Connect to the same server
-            altFrame.appendChild(altIframe);
-
-            const altControls = document.createElement('div');
-            altControls.className = 'altControls';
-
-            const deleteButton = document.createElement('button');
-            deleteButton.innerText = 'Delete Alt';
-            deleteButton.addEventListener('click', () => {
-                altFrame.remove();
-                altCount--;
-                updateMainSelector(); // Update dropdown when an alt is deleted
-            });
-
-            altControls.appendChild(deleteButton);
-            altFrame.appendChild(altControls);
-            altContainer.appendChild(altFrame);
-
-            // Store alt data
-            altData.push(altFrame);
-            updateMainSelector(); // Update dropdown
-        }
-
-        // Update dropdown options
-        function updateMainSelector() {
-            const mainSelector = document.getElementById('main-selector');
-            mainSelector.innerHTML = `<option value="" disabled selected>Select Main Screen</option>`;
-            mainSelector.innerHTML += `<option value="main">Main Screen</option>`;
-            altData.forEach((_, index) => {
-                mainSelector.innerHTML += `<option value="alt${index + 1}">Alt ${index + 1}</option>`;
-            });
-        }
-
-        // Main Screen Selection
-        document.getElementById('main-selector').addEventListener('change', function () {
-            const selectedValue = this.value;
-            const altFrames = document.getElementsByClassName('altFrame');
-
-            // Reset all alt frames to normal and position only the selected one at the top
-            const tempAltData = [...altData]; // Create a copy of the current data
-
-            if (selectedValue === "main") {
-                // Logic for when the main screen is selected
-                return; // Do nothing if "Main Screen" is selected
+        // Fullscreen toggle function
+        function toggleFullScreen(iframeId) {
+            const iframe = document.getElementById(iframeId);
+            if (iframe.requestFullscreen) {
+                iframe.requestFullscreen();
+            } else if (iframe.webkitRequestFullscreen) {
+                /* Safari */
+                iframe.webkitRequestFullscreen();
+            } else if (iframe.msRequestFullscreen) {
+                /* IE11 */
+                iframe.msRequestFullscreen();
             }
-
-            if (selectedValue) {
-                const selectedAltIndex = parseInt(selectedValue.replace('alt', '')) - 1; // Get the index of the selected alt
-                const selectedAlt = tempAltData.splice(selectedAltIndex, 1)[0]; // Remove the selected alt from the array
-                tempAltData.unshift(selectedAlt); // Add it to the top of the array
-                
-                // Clear altContainer and re-add frames in order
-                while (altContainer.firstChild) {
-                    altContainer.removeChild(altContainer.firstChild);
-                }
-                tempAltData.forEach(alt => {
-                    altContainer.appendChild(alt);
-                });
-            }
-        });
+        }
 
         // Promo code functionality
-        document.getElementById('submitPromoCode').addEventListener('click', function () {
+        document.getElementById('submitPromoCode').addEventListener('click', function() {
             const promoCode = document.getElementById('promoCodeInput').value;
-            if (promoCode === generatedKey) {
-                document.getElementById('adminconsole').classList.remove('hidden');
+
+            if (promoCode === "adminconsole") {
+                document.getElementById('adminConsole').classList.remove('hidden');
                 alert("Admin console unlocked!");
             } else {
                 alert("Invalid promo code.");
             }
         });
-
-        // Main iframe fullscreen toggle
-        document.getElementById('toggleFullscreen').addEventListener('click', function () {
-            if (document.fullscreenElement) {
-                document.exitFullscreen();
-            } else {
-                const mainIframe = document.getElementById('mainIframe');
-                if (mainIframe.requestFullscreen) {
-                    mainIframe.requestFullscreen();
-                } else if (mainIframe.mozRequestFullScreen) {
-                    mainIframe.mozRequestFullScreen(); // Firefox
-                } else if (mainIframe.webkitRequestFullscreen) {
-                    mainIframe.webkitRequestFullscreen(); // Chrome, Safari and Opera
-                } else if (mainIframe.msRequestFullscreen) {
-                    mainIframe.msRequestFullscreen(); // IE/Edge
-                }
-            }
-        });
     </script>
 </body>
-
 </html>
