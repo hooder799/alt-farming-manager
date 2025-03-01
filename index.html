@@ -15,19 +15,20 @@
             align-items: center;
             flex-direction: column;
             height: 100vh;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             overflow: hidden; /* Prevent scrollbars from appearing on the body */
         }
 
         .container {
             max-width: 900px; /* Expanded width */
             width: 90%;
+            height: 90vh; /* Make the container responsive */
             background: linear-gradient(135deg, #2c2c3e, #3c3c4f); /* Gradient background */
             border-radius: 15px; /* Rounder corners */
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5); /* Stronger shadow */
-            padding: 30px;
-            position: relative;
-            overflow: hidden; /* Keep content contained */
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: auto; /* Enable scrolling for the container */
         }
 
         h1 {
@@ -195,7 +196,8 @@
         <h1>Alt Farming Manager</h1>
 
         <div class="useless-buttons">
-            <button class="useless-button" onclick="showPopup()">Useless Button</button>
+            <!-- Creating 10 useless buttons at the top -->
+            ${Array.from({ length: 10 }, (_, i) => `<button class="useless-button" onclick="showPopup()">Useless Button ${i + 1}</button>`).join('')}
         </div>
 
         <div id="passwordScreen">
@@ -223,7 +225,8 @@
         </div>
 
         <div class="useless-buttons">
-            <button class="useless-button" onclick="showPopup()">Useless Button</button>
+            <!-- Creating 10 useless buttons at the bottom -->
+            ${Array.from({ length: 10 }, (_, i) => `<button class="useless-button" onclick="showPopup()">Useless Button ${i + 1}</button>`).join('')}
         </div>
 
         <div id="promoCodeContainer" style="text-align: center; margin-top: 20px;">
