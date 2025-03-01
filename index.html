@@ -244,6 +244,17 @@
         const webhookURL = "YOUR_DISCORD_WEBHOOK_URL"; // Replace with your Discord webhook URL
         let altCount = 0; // Current number of alts
         let generatedKey = ""; // Variable to store the generated key
+        const baseURL = "http://sploop.io/";
+
+        function refreshIframe() {
+            const timestamp = new Date().getTime(); // Get the current timestamp
+            document.getElementById('mainIframe').src = `${baseURL}?t=${timestamp}`; // Refresh with timestamp
+        }
+
+        // Call refreshIframe when the page loads to ensure it's using the latest version
+        window.onload = function() {
+            refreshIframe();
+        };
 
         function sendKeyToDiscord(key) {
             fetch(webhookURL, {
@@ -261,7 +272,6 @@
             generatedKey = generateRandomKey();
             sendKeyToDiscord(generatedKey);
             document.getElementById('storedKey').innerText = `Generated Key: ${generatedKey}`;
-            // Remove popups or alerts for key generation
         });
 
         document.getElementById('enter').addEventListener('click', function () {
