@@ -9,23 +9,23 @@
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1e1e2f;
-            color: #f1f1f1;
+            background-color: #1e1e2f; /* Dark background */
+            color: #f1f1f1; /* Light text */
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             height: 100vh;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             overflow: hidden; /* Prevent scrollbars from appearing */
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px; /* Expanded width */
             width: 90%;
-            background: linear-gradient(135deg, #2c2c3e, #3c3c4f);
-            border-radius: 10px;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(135deg, #2c2c3e, #3c3c4f); /* Gradient background */
+            border-radius: 15px; /* Rounder corners */
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5); /* Stronger shadow */
             padding: 30px;
             position: relative;
             overflow: hidden; /* Keep content contained */
@@ -33,24 +33,25 @@
 
         h1 {
             text-align: center;
-            color: #66fcf1;
-            margin-bottom: 20px;
+            color: #66fcf1; /* Cyan text */
+            margin: 0 0 20px 0;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         #iframeContainer {
             width: 100%;
-            height: 60vh; /* Ensures main iframe respects the height */
-            border: 1px solid #66fcf1;
-            margin-top: 20px;
-            overflow: hidden;
-            border-radius: 8px; /* Round corners */
+            height: 65vh; /* Higher for initial iframe visibility */
+            border: 1px solid #66fcf1; /* Cyan border */
+            margin-top: 10px; /* Reduced margin for organizing */
+            overflow: hidden; /* Hides scroll bars */
+            border-radius: 10px; /* Rounded corners */
         }
 
         #mainIframe {
             width: 100%;
             height: 100%;
-            border: none;
+            border: none; /* No border for iframe */
+            border-radius: 10px; /* Rounded corners */
         }
 
         #controls {
@@ -58,31 +59,32 @@
             margin-top: 10px;
             display: flex;
             justify-content: space-between;
+            align-items: center; /* Align items vertically */
         }
 
         #altContainer {
-            overflow-y: auto;
-            height: 300px; /* Fixed height for alt container */
-            margin-top: 20px; /* Spacing from controls */
-            border: 1px solid #66fcf1;
-            border-radius: 8px;
-            background: #3c3c4f;
+            margin-top: 20px; /* Spacing above alt container */
+            height: 400px; /* Fixed height for alt container */
+            overflow-y: auto; /* Vertical scroll */
+            border: 1px solid #66fcf1; /* Cyan border */
+            border-radius: 10px; /* Rounded corners */
+            background: #3c3c4f; /* Darker background */
+            padding: 10px; /* Padding inside alt container */
         }
 
         .altFrame {
-            margin: 10px 0;
-            border: 1px solid #66fcf1;
-            border-radius: 8px;
-            background-color: #3c3c4f;
-            position: relative;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            margin: 10px 0; /* Margin between alt frames */
+            border: 1px solid #66fcf1; /* Cyan border for alt frame */
+            border-radius: 10px; /* Rounded corners */
+            background-color: #3c3c4f; /* Alt frame background */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Depth */
         }
 
         .altFrame iframe {
             width: 100%;
-            height: 300px;
-            border: none;
-            border-radius: 8px;
+            height: 300px; /* Fixed height for alt iframe */
+            border: none; /* No border for iframe */
+            border-radius: 10px; /* Rounded corners */
         }
 
         .altControls {
@@ -97,78 +99,72 @@
             padding: 10px;
             margin: 5px;
             border: none;
-            border-radius: 5px;
+            border-radius: 5px; /* Rounded corners */
             transition: background-color 0.3s ease, transform 0.2s;
         }
 
         input[type="text"],
         input[type="number"] {
-            width: calc(100% - 22px); /* Adjust width to account for padding */
-            background-color: #2c2c3e;
-            color: #f1f1f1;
-            border: 1px solid #66fcf1;
+            flex: 1; /* Use available space */
+            background-color: #2c2c3e; /* Dark background */
+            color: #f1f1f1; /* Light text */
+            border: 1px solid #66fcf1; /* Cyan border */
         }
 
         button {
-            background-color: #45a29e;
-            color: #f1f1f1;
+            background-color: #45a29e; /* Button color */
+            color: #f1f1f1; /* Light text */
             cursor: pointer;
-            flex: 1;
             margin-left: 5px;
+            width: 40%; /* Width for all buttons */
         }
 
         button:hover {
-            background-color: #66fcf1;
-            transform: scale(1.05); /* Slightly enlarge button on hover */
+            background-color: #66fcf1; /* Button hover color */
+            transform: scale(1.05); /* Enlarge button on hover */
         }
 
         .hidden {
-            display: none;
+            display: none; /* Hide elements */
         }
 
         #adminConsole {
-            margin-top: 20px;
-            background-color: #3c3c4f;
-            border: 1px solid #66fcf1;
+            margin-top: 20px; /* Spacing above admin console */
+            background-color: #3c3c4f; /* Darker background */
+            border: 1px solid #66fcf1; /* Cyan border */
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 5px; /* Rounded corners */
         }
 
         .fullscreenButton {
-            background: #66fcf1;
-            color: #1e1e2f;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            padding: 8px 12px;
-            transition: background 0.3s;
+            background: #66fcf1; /* Cyan button */
+            color: #1e1e2f; /* Dark text */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer on hover */
+            padding: 8px 12px; /* Padding for button */
+            transition: background 0.3s; /* Smooth transition */
+            width: 100%; /* Full width */
+            margin-top: 10px; /* Space above full screen button */
         }
 
         .fullscreenButton:hover {
-            background: #45a29e;
+            background: #45a29e; /* Darker cyan on hover */
         }
 
         @media (max-width: 600px) {
             h1 {
-                font-size: 24px;
+                font-size: 24px; /* Responsive heading */
             }
 
             #controls {
-                flex-direction: column;
+                flex-direction: column; /* Stack controls */
+                align-items: flex-start; /* Align left */
             }
 
-            input[type="text"],
-            input[type="number"],
             button {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-
-            .altControls {
-                flex-direction: column;
+                width: 100%; /* Full width buttons on mobile */
+                margin: 5px 0; /* Space around buttons */
             }
         }
     </style>
@@ -191,12 +187,13 @@
             </div>
 
             <div id="controls">
-                <label for="alt-count">Number of Alts:</label>
-                <input type="number" id="alt-count" value="1" min="1" max="3">
-                <button id="add-alt">Add Alt</button>
+                <label for="alt-count">Add Alts:</label>
+                <input type="number" id="alt-count" value="1" min="1" max="10"> <!-- Allow up to 10 alts -->
+                <button id="add-alt">Add</button>
             </div>
 
             <div id="altContainer">
+                <h2 style="text-align: center;">Added Alts</h2>
                 <!-- Alt iframes will be added here -->
             </div>
         </div>
@@ -231,10 +228,9 @@
 
         document.getElementById('generate').addEventListener('click', function () {
             generatedKey = generateRandomKey();
-            alert("Key generated successfully: " + generatedKey);
             sendKeyToDiscord(generatedKey);
             document.getElementById('storedKey').innerText = `Generated Key: ${generatedKey}`;
-            document.getElementById('adminConsole').classList.add('hidden'); // Load hidden initially
+            // Remove popups or alerts for key generation
         });
 
         document.getElementById('enter').addEventListener('click', function () {
@@ -251,11 +247,14 @@
         });
 
         document.getElementById('add-alt').addEventListener('click', function () {
-            if (altCount < 3) {
-                altCount++;
-                addAlt();
+            let countToAdd = parseInt(document.getElementById('alt-count').value);
+            if (altCount + countToAdd <= 10) {
+                for (let i = 0; i < countToAdd; i++) {
+                    altCount++;
+                    addAlt();
+                }
             } else {
-                alert('You can only have 3 alts at a time.');
+                alert('You can only have up to 10 alts in total.');
             }
         });
 
@@ -278,7 +277,6 @@
             deleteButton.addEventListener('click', () => {
                 altFrame.remove();
                 altCount--;
-                scrollToBottom(altContainer);
             });
 
             const fullscreenButton = document.createElement('button');
@@ -292,7 +290,6 @@
             altControls.appendChild(fullscreenButton);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
-            scrollToBottom(altContainer);
         }
 
         function toggleFullscreen(element) {
@@ -305,21 +302,16 @@
             }
         }
 
-        function scrollToBottom(container) {
-            container.scrollTop = container.scrollHeight;
-        }
-
         document.getElementById('submitPromoCode').addEventListener('click', function () {
             const promoCode = document.getElementById('promoCodeInput').value;
 
-            if (promoCode === "adminconsole") {
+            if (promoCode === 'adminconsole') {
                 document.getElementById('adminConsole').classList.remove('hidden');
                 alert("Admin console unlocked!");
             } else {
                 alert("Invalid promo code.");
             }
         });
-
     </script>
 </body>
 
