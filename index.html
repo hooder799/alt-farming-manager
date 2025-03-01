@@ -115,7 +115,6 @@
             background-color: #45a29e; /* Button color */
             color: #f1f1f1; /* Light text */
             cursor: pointer;
-            margin-left: 5px;
             width: 40%; /* Width for all buttons */
         }
 
@@ -154,6 +153,26 @@
             background: #45a29e; /* Darker cyan on hover */
         }
 
+        /* Styles for Useless Buttons section */
+        .useless-buttons {
+            text-align: center;
+            margin: 20px 0; /* Margin for spacing */
+        }
+
+        .useless-button {
+            background-color: #ff5555; /* Red color */
+            color: white; /* White text */
+            border: none;
+            border-radius: 5px; /* Rounded corners */
+            margin: 5px; /* Spacing between buttons */
+            padding: 10px 20px; /* Button padding */
+            cursor: pointer; /* Pointer on hover */
+        }
+
+        .useless-button:hover {
+            background-color: #c70000; /* Darker red on hover */
+        }
+
         @media (max-width: 600px) {
             h1 {
                 font-size: 24px; /* Responsive heading */
@@ -174,6 +193,10 @@
 <body>
     <div class="container">
         <h1>Alt Farming Manager</h1>
+
+        <div class="useless-buttons">
+            <button class="useless-button" onclick="showPopup()">Useless Button</button>
+        </div>
 
         <div id="passwordScreen">
             <input type="text" id="userKey" placeholder="Enter Your Key">
@@ -197,6 +220,10 @@
                 <h2 style="text-align: center;">Added Alts</h2>
                 <!-- Alt iframes will be added here -->
             </div>
+        </div>
+
+        <div class="useless-buttons">
+            <button class="useless-button" onclick="showPopup()">Useless Button</button>
         </div>
 
         <div id="promoCodeContainer" style="text-align: center; margin-top: 20px;">
@@ -323,6 +350,10 @@
                 alert("Invalid promo code.");
             }
         });
+
+        function showPopup() {
+            alert("This is a button that takes space so you are able to see every game frame on the screen");
+        }
     </script>
 </body>
 </html>
