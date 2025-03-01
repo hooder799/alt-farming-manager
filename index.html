@@ -50,6 +50,11 @@
             margin-top: 10px;
         }
 
+        #altContainer {
+            overflow-y: auto; /* Enable vertical scrolling */
+            height: 300px; /* Fixed height for scrollable area */
+        }
+
         .altFrame {
             display: flex;
             flex-direction: column;
@@ -233,6 +238,7 @@
             deleteButton.addEventListener('click', () => {
                 altFrame.remove();
                 altCount--;
+                scrollToBottom(altContainer); // Ensure scroll moves to the last alt
             });
 
             const fullscreenButton = document.createElement('button');
@@ -246,6 +252,9 @@
             altControls.appendChild(fullscreenButton);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
+
+            // Scroll to the bottom of the alt container after adding a new alt
+            scrollToBottom(altContainer);
         }
 
         // Function to toggle fullscreen for a specific element
@@ -257,6 +266,11 @@
             } else {
                 document.exitFullscreen();
             }
+        }
+
+        // Automatically scroll to the bottom of the alt container
+        function scrollToBottom(container) {
+            container.scrollTop = container.scrollHeight;
         }
 
         // Promo code functionality
