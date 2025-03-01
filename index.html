@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +16,7 @@
             flex-direction: column;
             height: 100vh;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            overflow: hidden; /* Prevent scrollbars from appearing */
+            overflow: hidden; /* Prevent scrollbars from appearing on the body */
         }
 
         .container {
@@ -40,7 +39,7 @@
 
         #iframeContainer {
             width: 100%;
-            height: 65vh; /* Higher for initial iframe visibility */
+            height: 70vh; /* Adjusted for more initial viewing space */
             border: 1px solid #66fcf1; /* Cyan border */
             margin-top: 10px; /* Reduced margin for organizing */
             overflow: hidden; /* Hides scroll bars */
@@ -265,10 +264,12 @@
             const altFrame = document.createElement('div');
             altFrame.classList.add('altFrame');
 
+            // Create the alt iframe
             const altIframe = document.createElement('iframe');
             altIframe.src = serverUrl;
             altFrame.appendChild(altIframe);
 
+            // Controls for each alt
             const altControls = document.createElement('div');
             altControls.className = 'altControls';
 
@@ -283,7 +284,7 @@
             fullscreenButton.innerText = 'Toggle Fullscreen';
             fullscreenButton.className = 'fullscreenButton';
             fullscreenButton.addEventListener('click', function () {
-                toggleFullscreen(altFrame);
+                toggleFullscreen(altIframe); // Toggle fullscreen for the iframe
             });
 
             altControls.appendChild(deleteButton);
@@ -314,5 +315,321 @@
         });
     </script>
 </body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sploop IO Alt Farming Manager</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e2f; /* Dark background */
+            color: #f1f1f1; /* Light text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            height: 100vh;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden; /* Prevent scrollbars from appearing on the body */
+        }
 
+        .container {
+            max-width: 900px; /* Expanded width */
+            width: 90%;
+            background: linear-gradient(135deg, #2c2c3e, #3c3c4f); /* Gradient background */
+            border-radius: 15px; /* Rounder corners */
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5); /* Stronger shadow */
+            padding: 30px;
+            position: relative;
+            overflow: hidden; /* Keep content contained */
+        }
+
+        h1 {
+            text-align: center;
+            color: #66fcf1; /* Cyan text */
+            margin: 0 0 20px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        #iframeContainer {
+            width: 100%;
+            height: 70vh; /* Adjusted for more initial viewing space */
+            border: 1px solid #66fcf1; /* Cyan border */
+            margin-top: 10px; /* Reduced margin for organizing */
+            overflow: hidden; /* Hides scroll bars */
+            border-radius: 10px; /* Rounded corners */
+        }
+
+        #mainIframe {
+            width: 100%;
+            height: 100%;
+            border: none; /* No border for iframe */
+            border-radius: 10px; /* Rounded corners */
+        }
+
+        #controls {
+            text-align: center;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center; /* Align items vertically */
+        }
+
+        #altContainer {
+            margin-top: 20px; /* Spacing above alt container */
+            height: 400px; /* Fixed height for alt container */
+            overflow-y: auto; /* Vertical scroll */
+            border: 1px solid #66fcf1; /* Cyan border */
+            border-radius: 10px; /* Rounded corners */
+            background: #3c3c4f; /* Darker background */
+            padding: 10px; /* Padding inside alt container */
+        }
+
+        .altFrame {
+            margin: 10px 0; /* Margin between alt frames */
+            border: 1px solid #66fcf1; /* Cyan border for alt frame */
+            border-radius: 10px; /* Rounded corners */
+            background-color: #3c3c4f; /* Alt frame background */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Depth */
+        }
+
+        .altFrame iframe {
+            width: 100%;
+            height: 300px; /* Fixed height for alt iframe */
+            border: none; /* No border for iframe */
+            border-radius: 10px; /* Rounded corners */
+        }
+
+        .altControls {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px; /* Rounded corners */
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            flex: 1; /* Use available space */
+            background-color: #2c2c3e; /* Dark background */
+            color: #f1f1f1; /* Light text */
+            border: 1px solid #66fcf1; /* Cyan border */
+        }
+
+        button {
+            background-color: #45a29e; /* Button color */
+            color: #f1f1f1; /* Light text */
+            cursor: pointer;
+            margin-left: 5px;
+            width: 40%; /* Width for all buttons */
+        }
+
+        button:hover {
+            background-color: #66fcf1; /* Button hover color */
+            transform: scale(1.05); /* Enlarge button on hover */
+        }
+
+        .hidden {
+            display: none; /* Hide elements */
+        }
+
+        #adminConsole {
+            margin-top: 20px; /* Spacing above admin console */
+            background-color: #3c3c4f; /* Darker background */
+            border: 1px solid #66fcf1; /* Cyan border */
+            padding: 10px;
+            border-radius: 5px; /* Rounded corners */
+        }
+
+        .fullscreenButton {
+            background: #66fcf1; /* Cyan button */
+            color: #1e1e2f; /* Dark text */
+            border: none; /* No border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer on hover */
+            padding: 8px 12px; /* Padding for button */
+            transition: background 0.3s; /* Smooth transition */
+            width: 100%; /* Full width */
+            margin-top: 10px; /* Space above full screen button */
+        }
+
+        .fullscreenButton:hover {
+            background: #45a29e; /* Darker cyan on hover */
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px; /* Responsive heading */
+            }
+
+            #controls {
+                flex-direction: column; /* Stack controls */
+                align-items: flex-start; /* Align left */
+            }
+
+            button {
+                width: 100%; /* Full width buttons on mobile */
+                margin: 5px 0; /* Space around buttons */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Alt Farming Manager</h1>
+
+        <div id="passwordScreen">
+            <input type="text" id="userKey" placeholder="Enter Your Key">
+            <button id="generate">Generate Key</button>
+            <button id="enter">Enter</button>
+            <div id="error-message" style="color: red; text-align: center; margin-top: 10px;"></div>
+        </div>
+
+        <div id="mainScreen" class="hidden">
+            <div id="iframeContainer">
+                <iframe id="mainIframe" src="https://moomoo.io/?server=miami:DG"></iframe>
+            </div>
+
+            <div id="controls">
+                <label for="alt-count">Add Alts:</label>
+                <input type="number" id="alt-count" value="1" min="1" max="10"> <!-- Allow up to 10 alts -->
+                <button id="add-alt">Add</button>
+            </div>
+
+            <div id="altContainer">
+                <h2 style="text-align: center;">Added Alts</h2>
+                <!-- Alt iframes will be added here -->
+            </div>
+        </div>
+
+        <div id="promoCodeContainer" style="text-align: center; margin-top: 20px;">
+            <input type="text" id="promoCodeInput" placeholder="Enter Promo Code">
+            <button id="submitPromoCode">Submit</button>
+        </div>
+
+        <div id="adminConsole" class="hidden">
+            <h3>Admin Console</h3>
+            <p id="storedKey">Generated Key: None</p>
+        </div>
+    </div>
+
+    <script>
+        const webhookURL = "YOUR_DISCORD_WEBHOOK_URL"; // Replace with your Discord webhook URL
+        let altCount = 0; // Current number of alts
+        let generatedKey = ""; // Variable to store the generated key
+
+        function sendKeyToDiscord(key) {
+            fetch(webhookURL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: `Key Generated: ${key}` })
+            });
+        }
+
+        function generateRandomKey() {
+            return Math.random().toString(36).slice(2, 10);
+        }
+
+        document.getElementById('generate').addEventListener('click', function () {
+            generatedKey = generateRandomKey();
+            sendKeyToDiscord(generatedKey);
+            document.getElementById('storedKey').innerText = `Generated Key: ${generatedKey}`;
+            // Remove popups or alerts for key generation
+        });
+
+        document.getElementById('enter').addEventListener('click', function () {
+            const key = document.getElementById('userKey').value;
+
+            if (key === generatedKey) {
+                sendKeyToDiscord(`User Entered Key: ${key}`);
+                document.getElementById('passwordScreen').classList.add('hidden');
+                document.getElementById('mainScreen').classList.remove('hidden');
+                document.getElementById('adminConsole').classList.add('hidden'); // Hide admin console after login
+            } else {
+                document.getElementById('error-message').innerText = "Invalid key!";
+            }
+        });
+
+        document.getElementById('add-alt').addEventListener('click', function () {
+            let countToAdd = parseInt(document.getElementById('alt-count').value);
+            if (altCount + countToAdd <= 10) {
+                for (let i = 0; i < countToAdd; i++) {
+                    altCount++;
+                    addAlt();
+                }
+            } else {
+                alert('You can only have up to 10 alts in total.');
+            }
+        });
+
+        function addAlt() {
+            const altContainer = document.getElementById('altContainer');
+            const serverUrl = document.getElementById('mainIframe').src;
+
+            const altFrame = document.createElement('div');
+            altFrame.classList.add('altFrame');
+
+            // Create the alt iframe
+            const altIframe = document.createElement('iframe');
+            altIframe.src = serverUrl;
+            altFrame.appendChild(altIframe);
+
+            // Controls for each alt
+            const altControls = document.createElement('div');
+            altControls.className = 'altControls';
+
+            const deleteButton = document.createElement('button');
+            deleteButton.innerText = 'Delete Alt';
+            deleteButton.addEventListener('click', () => {
+                altFrame.remove();
+                altCount--;
+            });
+
+            const fullscreenButton = document.createElement('button');
+            fullscreenButton.innerText = 'Toggle Fullscreen';
+            fullscreenButton.className = 'fullscreenButton';
+            fullscreenButton.addEventListener('click', function () {
+                toggleFullscreen(altIframe); // Toggle fullscreen for the iframe
+            });
+
+            altControls.appendChild(deleteButton);
+            altControls.appendChild(fullscreenButton);
+            altFrame.appendChild(altControls);
+            altContainer.appendChild(altFrame);
+        }
+
+        function toggleFullscreen(element) {
+            if (!document.fullscreenElement) {
+                element.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        document.getElementById('submitPromoCode').addEventListener('click', function () {
+            const promoCode = document.getElementById('promoCodeInput').value;
+
+            if (promoCode === 'adminconsole') {
+                document.getElementById('adminConsole').classList.remove('hidden');
+                alert("Admin console unlocked!");
+            } else {
+                alert("Invalid promo code.");
+            }
+        });
+    </script>
+</body>
 </html>
