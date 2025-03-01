@@ -42,8 +42,8 @@
             height: 70vh; /* Adjusted for more initial viewing space */
             border: 1px solid #66fcf1; /* Cyan border */
             margin-top: 10px; /* Reduced margin for organizing */
-            overflow: hidden; /* Hides scroll bars */
             border-radius: 10px; /* Rounded corners */
+            overflow: hidden; /* Hides scroll bars */
         }
 
         #mainIframe {
@@ -278,6 +278,7 @@
             deleteButton.addEventListener('click', () => {
                 altFrame.remove();
                 altCount--;
+                autoScrollAltContainer(); // Ensure it scrolls when an alt is deleted
             });
 
             const fullscreenButton = document.createElement('button');
@@ -291,6 +292,13 @@
             altControls.appendChild(fullscreenButton);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
+
+            autoScrollAltContainer(); // Scroll to the bottom when a new alt is added
+        }
+
+        function autoScrollAltContainer() {
+            const altContainer = document.getElementById('altContainer');
+            altContainer.scrollTop = altContainer.scrollHeight; // Auto scroll to the bottom
         }
 
         function toggleFullscreen(element) {
