@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,35 +8,38 @@
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #1e1e2f;
+            color: #f1f1f1;
             display: flex;
             justify-content: center;
             align-items: center;
             flex-direction: column;
             height: 100vh;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         }
 
         .container {
             max-width: 800px;
             width: 90%;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            padding: 20px;
-            position: relative; /* Required for stacking context */
+            background: #2c2c3e;
+            border-radius: 10px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+            padding: 30px;
+            position: relative;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #66fcf1;
+            margin-bottom: 20px;
         }
 
         #iframeContainer {
             width: 100%;
             height: 60vh;
-            border: 1px solid black;
-            margin: 20px 0;
+            border: 1px solid #66fcf1;
+            margin-bottom: 20px;
             overflow: hidden;
         }
 
@@ -51,35 +55,32 @@
         }
 
         #altContainer {
-            overflow-y: auto; /* Enable vertical scrolling */
-            height: 300px; /* Fixed height for scrollable area */
+            overflow-y: auto;
+            height: 300px;
+            margin-bottom: 20px;
+            scrollbar-width: thin; /* For Firefox */
         }
 
         .altFrame {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 10px auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            width: 100%;
-            background-color: #e9ecef;
-            position: relative; /* Required for absolute positioning of fullscreen button */
+            margin: 10px 0;
+            border: 1px solid #66fcf1;
+            border-radius: 8px;
+            background-color: #3c3c4f;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
         }
 
         .altFrame iframe {
             width: 100%;
-            height: 300px; 
+            height: 300px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
         }
 
         .altControls {
-            margin-top: 10px;
             display: flex;
             justify-content: space-between;
-            width: 100%;
+            padding: 10px;
         }
 
         input[type="text"],
@@ -87,20 +88,30 @@
         button {
             padding: 10px;
             margin: 5px;
-            border: 1px solid #007bff;
+            border: none;
             border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="text"],
+        input[type="number"] {
             width: 80%;
             max-width: 300px;
+            background-color: #2c2c3e;
+            color: #f1f1f1;
+            border: 1px solid #66fcf1;
         }
 
         button {
-            background-color: #007bff;
-            color: white;
+            background-color: #45a29e;
+            color: #f1f1f1;
             cursor: pointer;
+            flex: 1;
+            margin-left: 5px;
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #66fcf1;
         }
 
         .hidden {
@@ -109,34 +120,56 @@
 
         #adminConsole {
             margin-top: 20px;
-            background-color: #f8f9fa;
-            border: 1px solid #007bff;
+            background-color: #3c3c4f;
+            border: 1px solid #66fcf1;
             padding: 10px;
             border-radius: 5px;
         }
 
-        /* Fullscreen button style */
         .fullscreenButton {
+            background: #66fcf1;
+            color: #1e1e2f;
             position: absolute;
             top: 10px;
             right: 10px;
-            padding: 8px 12px;
-            background: #007bff;
-            color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            padding: 8px 12px;
+            transition: background 0.3s;
         }
 
         .fullscreenButton:hover {
-            background: #0056b3;
+            background: #45a29e;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            #controls {
+                flex-direction: column;
+            }
+
+            input[type="text"],
+            input[type="number"],
+            button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .altControls {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Welcome to Alt Farming Manager</h1>
-        
+        <h1>Alt Farming Manager</h1>
+
         <div id="passwordScreen">
             <input type="text" id="userKey" placeholder="Enter Your Key">
             <button id="generate">Generate Key</button>
@@ -161,7 +194,7 @@
         </div>
 
         <div id="promoCodeContainer" style="text-align: center; margin-top: 20px;">
-            <input type="text" id="promoCodeInput" placeholder="paycode">
+            <input type="text" id="promoCodeInput" placeholder="Enter Promo Code">
             <button id="submitPromoCode">Submit</button>
         </div>
 
@@ -172,11 +205,10 @@
     </div>
 
     <script>
-        const webhookURL = "https://discord.com/api/webhooks/1345425565544611984/Zjx5Th52IjeX8mZOp-CTsMozm54Kq-HMjx49-YUI5v26HPu2z74_6q9MQLZ5tIfcFQX4"; // Replace with your Discord webhook URL
+        const webhookURL = "YOUR_DISCORD_WEBHOOK_URL"; // Replace with your Discord webhook URL
         let altCount = 0; // Current number of alts
         let generatedKey = ""; // Variable to store the generated key
 
-        // Function to send key to Discord
         function sendKeyToDiscord(key) {
             fetch(webhookURL, {
                 method: 'POST',
@@ -185,20 +217,19 @@
             });
         }
 
-        // Function to generate a random key
         function generateRandomKey() {
-            return Math.random().toString(36).slice(2, 10); // Generates a random alphanumeric key
+            return Math.random().toString(36).slice(2, 10); 
         }
 
-        document.getElementById('generate').addEventListener('click', function() {
+        document.getElementById('generate').addEventListener('click', function () {
             generatedKey = generateRandomKey();
+            alert("Key generated successfully: " + generatedKey);
             sendKeyToDiscord(generatedKey);
             document.getElementById('storedKey').innerText = `Generated Key: ${generatedKey}`;
-            document.getElementById('adminConsole').classList.remove('hidden');
-            alert("Key has been generated and sent to the webhook.");
+            document.getElementById('adminConsole').classList.add('hidden'); // Load hidden initially
         });
 
-        document.getElementById('enter').addEventListener('click', function() {
+        document.getElementById('enter').addEventListener('click', function () {
             const key = document.getElementById('userKey').value;
 
             if (key === generatedKey) {
@@ -210,7 +241,7 @@
             }
         });
 
-        document.getElementById('add-alt').addEventListener('click', function() {
+        document.getElementById('add-alt').addEventListener('click', function () {
             if (altCount < 3) {
                 altCount++;
                 addAlt();
@@ -227,7 +258,7 @@
             altFrame.classList.add('altFrame');
 
             const altIframe = document.createElement('iframe');
-            altIframe.src = serverUrl; // Connect to the same server
+            altIframe.src = serverUrl; 
             altFrame.appendChild(altIframe);
 
             const altControls = document.createElement('div');
@@ -238,13 +269,13 @@
             deleteButton.addEventListener('click', () => {
                 altFrame.remove();
                 altCount--;
-                scrollToBottom(altContainer); // Ensure scroll moves to the last alt
+                scrollToBottom(altContainer);
             });
 
             const fullscreenButton = document.createElement('button');
             fullscreenButton.innerText = 'Toggle Fullscreen';
             fullscreenButton.className = 'fullscreenButton';
-            fullscreenButton.addEventListener('click', function() {
+            fullscreenButton.addEventListener('click', function () {
                 toggleFullscreen(altFrame);
             });
 
@@ -252,12 +283,9 @@
             altControls.appendChild(fullscreenButton);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
-
-            // Scroll to the bottom of the alt container after adding a new alt
             scrollToBottom(altContainer);
         }
 
-        // Function to toggle fullscreen for a specific element
         function toggleFullscreen(element) {
             if (!document.fullscreenElement) {
                 element.requestFullscreen().catch(err => {
@@ -268,13 +296,11 @@
             }
         }
 
-        // Automatically scroll to the bottom of the alt container
         function scrollToBottom(container) {
             container.scrollTop = container.scrollHeight;
         }
 
-        // Promo code functionality
-        document.getElementById('submitPromoCode').addEventListener('click', function() {
+        document.getElementById('submitPromoCode').addEventListener('click', function () {
             const promoCode = document.getElementById('promoCodeInput').value;
 
             if (promoCode === "adminconsole") {
@@ -284,7 +310,7 @@
                 alert("Invalid promo code.");
             }
         });
-        
     </script>
 </body>
+
 </html>
