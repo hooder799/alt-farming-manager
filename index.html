@@ -12,8 +12,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             flex-direction: column;
+            height: 100vh;
         }
 
         .container {
@@ -23,6 +23,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             padding: 20px;
+            position: relative; /* Required for stacking context */
         }
 
         h1 {
@@ -59,6 +60,7 @@
             padding: 10px;
             width: 100%;
             background-color: #e9ecef;
+            position: relative; /* Required for absolute positioning of fullscreen button */
         }
 
         .altFrame iframe {
@@ -70,6 +72,9 @@
 
         .altControls {
             margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
         }
 
         input[type="text"],
@@ -104,11 +109,29 @@
             padding: 10px;
             border-radius: 5px;
         }
+
+        /* Fullscreen button style */
+        .fullscreenButton {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 8px 12px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .fullscreenButton:hover {
+            background: #0056b3;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Welcome to Alt Farming Manager</h1>
+        
         <div id="passwordScreen">
             <input type="text" id="userKey" placeholder="Enter Your Key">
             <button id="generate">Generate Key</button>
@@ -164,8 +187,6 @@
 
         document.getElementById('generate').addEventListener('click', function() {
             generatedKey = generateRandomKey();
-
-            // Send the key to the Discord webhook
             sendKeyToDiscord(generatedKey);
             document.getElementById('storedKey').innerText = `Generated Key: ${generatedKey}`;
             document.getElementById('adminConsole').classList.remove('hidden');
@@ -176,7 +197,6 @@
             const key = document.getElementById('userKey').value;
 
             if (key === generatedKey) {
-                // Allow access to the alt manager
                 sendKeyToDiscord(`User Entered Key: ${key}`);
                 document.getElementById('passwordScreen').classList.add('hidden');
                 document.getElementById('mainScreen').classList.remove('hidden');
@@ -215,9 +235,28 @@
                 altCount--;
             });
 
+            const fullscreenButton = document.createElement('button');
+            fullscreenButton.innerText = 'Toggle Fullscreen';
+            fullscreenButton.className = 'fullscreenButton';
+            fullscreenButton.addEventListener('click', function() {
+                toggleFullscreen(altFrame);
+            });
+
             altControls.appendChild(deleteButton);
+            altControls.appendChild(fullscreenButton);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
+        }
+
+        // Function to toggle fullscreen for a specific element
+        function toggleFullscreen(element) {
+            if (!document.fullscreenElement) {
+                element.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
         }
 
         // Promo code functionality
