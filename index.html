@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sploop IO Alt Farming Manager</title>
+    <title>alt manager</title>
     <style>
         body {
             margin: 0;
@@ -154,7 +155,6 @@
             background: #45a29e; /* Darker cyan on hover */
         }
 
-        /* Styles for Useless Buttons section */
         .useless-buttons {
             text-align: center;
             margin: 20px 0; /* Margin for spacing */
@@ -191,13 +191,13 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Alt Farming Manager</h1>
 
         <div class="useless-buttons">
-            <!-- Creating 10 useless buttons at the top -->
-            <button class="useless-button" onclick="showPopup()">Useless Button </button>
+            <button class="useless-button" onclick="showPopup()">Useless Button</button>
         </div>
 
         <div id="passwordScreen">
@@ -209,9 +209,9 @@
 
         <div id="mainScreen" class="hidden">
             <div id="iframeContainer">
-                <iframe id="mainIframe" src="http://sploop.io/"></iframe>
+                <iframe id="mainIframe" src="http://sploop.io/" onload="checkIframeLoad()"></iframe>
             </div>
-
+            <div id="iframeError" style="color: red; display: none; text-align: center;">Failed to load the content. Check the URL.</div>
             <div id="controls">
                 <label for="alt-count">Add Alts:</label>
                 <input type="number" id="alt-count" value="1" min="1" max="10"> <!-- Allow up to 10 alts -->
@@ -225,8 +225,7 @@
         </div>
 
         <div class="useless-buttons">
-            <!-- Creating 10 useless buttons at the bottom -->
-            <button class="useless-button" onclick="showPopup()">Useless Button </button>
+            <button class="useless-button" onclick="showPopup()">Useless Button</button>
         </div>
 
         <div id="promoCodeContainer" style="text-align: center; margin-top: 20px;">
@@ -244,17 +243,16 @@
         const webhookURL = "YOUR_DISCORD_WEBHOOK_URL"; // Replace with your Discord webhook URL
         let altCount = 0; // Current number of alts
         let generatedKey = ""; // Variable to store the generated key
-        const baseURL = "http://sploop.io/";
+        const iframe = document.getElementById('mainIframe');
 
-        function refreshIframe() {
-            const timestamp = new Date().getTime(); // Get the current timestamp
-            document.getElementById('mainIframe').src = `${baseURL}?t=${timestamp}`; // Refresh with timestamp
+        function checkIframeLoad() {
+            // This function checks if the iframe loaded correctly
+            if (iframe.contentWindow.location.href === 'about:blank') {
+                document.getElementById('iframeError').style.display = 'block';
+            } else {
+                document.getElementById('iframeError').style.display = 'none';
+            }
         }
-
-        // Call refreshIframe when the page loads to ensure it's using the latest version
-        window.onload = function() {
-            refreshIframe();
-        };
 
         function sendKeyToDiscord(key) {
             fetch(webhookURL, {
@@ -265,7 +263,7 @@
         }
 
         function generateRandomKey() {
-            return Math.random().toString(36).slice(2, 10);
+            return Math.random().toString(36).slice(2, 10); // Generates a random key
         }
 
         document.getElementById('generate').addEventListener('click', function () {
@@ -369,4 +367,5 @@
         }
     </script>
 </body>
+
 </html>
