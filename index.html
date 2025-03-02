@@ -48,8 +48,15 @@
             overflow: hidden;
             position: relative; /* So buttons can be positioned above iframe */
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: flex-end; /* Align buttons to the right */
+            align-items: flex-start; /* Align buttons towards the start */
+        }
+
+        .button-container {
+            display: flex; /* Flex container for buttons */
+            position: absolute; /* Position buttons over iframe */
+            top: -5px; /* Adjust according to preference */
+            right: 10px; /* Space from the right */
         }
 
         #mainIframe {
@@ -170,8 +177,6 @@
 
         .fullscreen-btn,
         .refresh-btn {
-            position: absolute;
-            top: -5px; /* Keep the top position */
             width: 40px; /* Fixed width for a smaller button size */
             height: 30px; /* Fixed height for a smaller button size */
             padding: 0; /* Remove padding for a smaller button */
@@ -181,7 +186,8 @@
             background-color: #45a29e; /* Background color */
             color: #f1f1f1; /* Text color */
             cursor: pointer; /* Pointer cursor */
-            z-index: 10;
+            margin-left: 5px; /* Space between buttons */
+            text-align: center; /* Center text */
         }
 
         .fullscreen-btn:hover,
@@ -223,8 +229,10 @@
 
         <div id="mainScreen" class="hidden">
             <div id="iframeContainer">
-                <button class="refresh-btn" onclick="refreshMainIframe()">Refresh</button>
-                <button class="fullscreen-btn" onclick="toggleFullscreenMain()">Fullscreen</button>
+                <div class="button-container">
+                    <button class="refresh-btn" onclick="refreshMainIframe()">R</button>
+                    <button class="fullscreen-btn" onclick="toggleFullscreenMain()">FS</button>
+                </div>
                 <div id="loadingIndicator">Loading...</div>
                 <iframe id="mainIframe" src="https://sploop.io/" onload="checkIframeLoad()"></iframe>
                 <div id="iframeError">Failed to load the content. Check the URL.</div>
