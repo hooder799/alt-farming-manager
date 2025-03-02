@@ -232,7 +232,7 @@
                     <button class="fullscreen-btn" onclick="toggleFullscreenMain()">Fullscreen</button>
                 </div>
                 <div id="loadingIndicator">Loading...</div>
-                <iframe id="mainIframe" src="https://sploop.io/" onload="checkIframeLoad()"></iframe>
+                <iframe id="mainIframe" src="" onload="checkIframeLoad()"></iframe>
                 <div id="iframeError">Failed to load the content. Check the URL.</div>
             </div>
 
@@ -281,41 +281,25 @@
         const iframe = document.getElementById('mainIframe');
         const loadingIndicator = document.getElementById('loadingIndicator');
         const iframeError = document.getElementById('iframeError');
-        let initialLoadDone = false; // Flag to ensure the error is shown only once.
 
         function checkIframeLoad() {
             loadingIndicator.style.display = 'none'; // Hide loading indicator when loading completes
-
-            // If we haven't shown the error yet, display it after the first successful load
-            if (!initialLoadDone) {
-                initialLoadDone = true; // Mark the initial load as done
-                displayError(); // Show the error message
-            } else if (iframe.contentWindow.location.href === 'about:blank') {
-                // Show error if iframe is blank
+            if (iframe.contentWindow.location.href === 'about:blank') {
                 iframeError.style.display = 'block';
             } else {
                 iframeError.style.display = 'none';
             }
         }
 
-        function displayError() {
-            // Create and show the error message
-            alert("Error code: SIGSEGV");
-            // Optionally, log to the console
-            console.error("Simulated crash: Error code: SIGSEGV");
-        }
-
         document.getElementById('enter').addEventListener('click', function () {
             document.getElementById('passwordScreen').classList.add('hidden');
             document.getElementById('mainScreen').classList.remove('hidden');
-            // Set initial game URL for the main iframe
             loadIframe("https://sploop.io/");
         });
 
         function loadIframe(src) {
             loadingIndicator.style.display = 'block'; // Show loading indicator when starting to load
             iframe.src = src;
-
             // Retry loading after a timeout in case of failure
             setTimeout(() => {
                 if (iframe.contentWindow.location.href === 'about:blank') {
