@@ -77,7 +77,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;  /* Allow controls to wrap on small screens */
         }
 
         #altContainer {
@@ -96,6 +95,13 @@
             background-color: #3c3c4f;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             overflow: hidden;
+        }
+
+        .altFrame iframe {
+            width: 100%;
+            height: 300px;
+            border: none;
+            border-radius: 10px;
         }
 
         .altControls {
@@ -128,6 +134,52 @@
 
         .hidden {
             display: none;
+        }
+
+        .useless-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .useless-button {
+            background-color: #ff5555;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .useless-button:hover {
+            background-color: #c70000;
+        }
+
+        .theme-button {
+            padding: 10px;
+            background-color: #45a29e;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .theme-button:hover {
+            background-color: #66fcf1;
+        }
+
+        .fullscreen-btn {
+            position: absolute;
+            top: 5px; /* Moved higher from 10px to 5px */
+            left: 10px;
+            z-index: 10;
+        }
+
+        .refresh-btn {
+            position: absolute;
+            top: 5px; /* Moved higher from 10px to 5px */
+            right: 10px;
+            z-index: 10;
         }
 
         @media (max-width: 600px) {
@@ -164,14 +216,14 @@
 
         <div id="mainScreen" class="hidden">
             <div id="iframeContainer">
+                <button class="refresh-btn" onclick="refreshMainIframe()">Refresh</button>
+                <button class="fullscreen-btn" onclick="toggleFullscreenMain()">Fullscreen</button>
                 <div id="loadingIndicator">Loading...</div>
-                <iframe id="mainIframe" src="https://sploop.io/" onload="checkIframeLoad()" sandbox="allow-same-origin allow-scripts"></iframe>
+                <iframe id="mainIframe" src="https://sploop.io/" onload="checkIframeLoad()"></iframe>
                 <div id="iframeError">Failed to load the content. Check the URL.</div>
             </div>
 
             <div id="controls">
-                <button class="refresh-btn" onclick="refreshMainIframe()">Refresh</button>
-                <button class="fullscreen-btn" onclick="toggleFullscreenMain()">Fullscreen</button>
                 <select id="gameSelector">
                     <option value="https://moomoo.io/?server=miami:ZP">Moomoo.io</option>
                     <option value="https://sploop.io/">Sploop.io</option>
@@ -186,6 +238,28 @@
                 <h2 style="text-align: center;">Added Alts</h2>
                 <!-- Alt iframes will be added here -->
             </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <label for="themeSelector">Select Theme:</label>
+                <select id="themeSelector" onchange="changeTheme()">
+                    <option value="linear-gradient(to right, #2c3e50, #4ca1af)">Dark Blue</option>
+                    <option value="linear-gradient(to right, #000000, #434343)">Black & Gray</option>
+                    <option value="linear-gradient(to right, #ff416c, #ff4b2b)">Red & Orange</option>
+                    <option value="linear-gradient(to right, #00c6ff, #0072ff)">Blue</option>
+                    <option value="linear-gradient(to right, #00b09b, #96c93d)">Green</option>
+                    <option value="linear-gradient(to right, #1c1c1c, #3b3b3b)">Dark Gray</option>
+                    <option value="linear-gradient(to right, #ff5e62, #ffb199)">Soft Pink</option>
+                    <option value="linear-gradient(to right, #4facfe, #00f2fe)">Discord Blue</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="theme hidden">
+            <button class="theme-button" onclick="toggleTheme()">Toggle Dark/Light Mode</button>
+        </div>
+
+        <div class="useless-buttons">
+            <button class="useless-button" onclick="showPopup()">Useless Button</button>
         </div>
     </div>
 
@@ -207,12 +281,20 @@
         document.getElementById('enter').addEventListener('click', function () {
             document.getElementById('passwordScreen').classList.add('hidden');
             document.getElementById('mainScreen').classList.remove('hidden');
+            // Set initial game URL for the main iframe
             loadIframe("https://sploop.io/");
         });
 
         function loadIframe(src) {
             loadingIndicator.style.display = 'block'; // Show the loading indicator when starting to load
             iframe.src = src;
+
+            // Retry loading after a timeout in case of failure
+            setTimeout(() => {
+                if (iframe.contentWindow.location.href === 'about:blank') {
+                    iframeError.style.display = 'block';
+                }
+            }, 5000); // wait 5 seconds before checking
         }
 
         document.getElementById('add-alt').addEventListener('click', function () {
@@ -256,6 +338,7 @@
                 if (confirm('Are you sure you want to delete this alt?')) {
                     altFrame.remove();
                     altCount--;
+                    autoScrollAltContainer();
                 }
             });
 
@@ -265,14 +348,33 @@
                 loadAltIframe(altIframe, serverUrl); // Reload the alt iframe
             });
 
+            const fullscreenButton = document.createElement('button');
+            fullscreenButton.innerText = 'Toggle Fullscreen';
+            fullscreenButton.className = 'fullscreenButton';
+            fullscreenButton.addEventListener('click', function () {
+                toggleFullscreen(altIframe);
+            });
+
             altControls.appendChild(deleteButton);
             altControls.appendChild(refreshButton);
+            altControls.appendChild(fullscreenButton);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
+
+            autoScrollAltContainer();
+        }
+
+        function autoScrollAltContainer() {
+            const altContainer = document.getElementById('altContainer');
+            altContainer.scrollTop = altContainer.scrollHeight;
         }
 
         function refreshMainIframe() {
             loadIframe(iframe.src); // Reload the main iframe
+        }
+
+        function loadAltIframe(altIframe, serverUrl) {
+            altIframe.src = serverUrl; // Reload the alt iframe
         }
 
         function toggleFullscreenMain() {
@@ -285,8 +387,24 @@
             }
         }
 
+        function toggleFullscreen(element) {
+            if (!document.fullscreenElement) {
+                element.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function changeTheme() {
+            const selectedTheme = document.getElementById('themeSelector').value;
+            document.body.style.background = selectedTheme; // Set the background to the selected gradient
+            document.querySelector('.container').style.background = selectedTheme; // Set container background to match
+        }
+
         function showPopup() {
-            alert("This is a button that takes space to demonstrate functionality.");
+            alert("This is a button that takes space so you are able to see every game frame on the screen");
         }
     </script>
 </body>
