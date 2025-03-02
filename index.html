@@ -9,7 +9,6 @@
         body {
             margin: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #1e1e2f; /* Dark background */
             color: #f1f1f1; /* Light text */
             display: flex;
             justify-content: center;
@@ -17,19 +16,21 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
+            transition: background 0.5s ease; /* Smooth transition for background */
         }
 
         .container {
             max-width: 900px;
             width: 90%;
             height: 90vh;
-            background: linear-gradient(135deg, #2c2c3e, #3c3c4f);
             border-radius: 15px;
             box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
             padding: 20px;
             display: flex;
             flex-direction: column;
             overflow: auto;
+            background: linear-gradient(135deg, #2c2c3e, #3c3c4f);
+            border: 1px solid #66fcf1;
         }
 
         h1 {
@@ -42,7 +43,6 @@
         #iframeContainer {
             width: 100%;
             height: 70vh;
-            border: 1px solid #66fcf1;
             margin-top: 10px;
             border-radius: 10px;
             overflow: hidden;
@@ -67,7 +67,6 @@
             margin-top: 20px;
             height: 400px;
             overflow-y: auto;
-            border: 1px solid #66fcf1;
             border-radius: 10px;
             background: #3c3c4f;
             padding: 10px;
@@ -195,7 +194,7 @@
 
         <div id="mainScreen" class="hidden">
             <div id="iframeContainer">
-                <iframe id="mainIframe" src="" onload="checkIframeLoad()"></iframe>
+                <iframe id="mainIframe" src="https://sploop.io/" onload="checkIframeLoad()"></iframe>
             </div>
 
             <div id="iframeError" style="color: red; display: none; text-align: center;">Failed to load the content. Check the URL.</div>
@@ -214,6 +213,20 @@
             <div id="altContainer">
                 <h2 style="text-align: center;">Added Alts</h2>
                 <!-- Alt iframes will be added here -->
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <label for="themeSelector">Select Theme:</label>
+                <select id="themeSelector" onchange="changeTheme()">
+                    <option value="linear-gradient(to right, #2c3e50, #4ca1af)">Dark Blue</option>
+                    <option value="linear-gradient(to right, #000000, #434343)">Black & Gray</option>
+                    <option value="linear-gradient(to right, #ff416c, #ff4b2b)">Red & Orange</option>
+                    <option value="linear-gradient(to right, #00c6ff, #0072ff)">Blue</option>
+                    <option value="linear-gradient(to right, #00b09b, #96c93d)">Green</option>
+                    <option value="linear-gradient(to right, #1c1c1c, #3b3b3b)">Dark Gray</option>
+                    <option value="linear-gradient(to right, #ff5e62, #ffb199)">Soft Pink</option>
+                    <option value="linear-gradient(to right, #4facfe, #00f2fe)">Discord Blue</option>
+                </select>
             </div>
         </div>
 
@@ -242,7 +255,8 @@
         document.getElementById('enter').addEventListener('click', function () {
             document.getElementById('passwordScreen').classList.add('hidden');
             document.getElementById('mainScreen').classList.remove('hidden');
-            iframe.src = document.getElementById('gameSelector').value; // Set the initial game URL
+            // Set initial game URL for the main iframe (already set above to Sploop.io)
+            iframe.src = "https://sploop.io/";
         });
 
         document.getElementById('add-alt').addEventListener('click', function () {
@@ -252,7 +266,7 @@
             if (altCount + countToAdd <= 10) {
                 for (let i = 0; i < countToAdd; i++) {
                     altCount++;
-                    addAlt(serverUrl);
+                    addAlt("https://sploop.io/"); // Set alt frames to start with Sploop.io
                 }
             } else {
                 alert('You can only have up to 10 alts in total.');
@@ -290,6 +304,12 @@
                 }
             });
 
+            const refreshButton = document.createElement('button');
+            refreshButton.innerText = 'Refresh';
+            refreshButton.addEventListener('click', () => {
+                altIframe.src = altIframe.src; // Reload the alt iframe
+            });
+
             const fullscreenButton = document.createElement('button');
             fullscreenButton.innerText = 'Toggle Fullscreen';
             fullscreenButton.className = 'fullscreenButton';
@@ -298,6 +318,7 @@
             });
 
             altControls.appendChild(deleteButton);
+            altControls.appendChild(refreshButton);
             altControls.appendChild(fullscreenButton);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
@@ -320,16 +341,10 @@
             }
         }
 
-        function toggleTheme() {
-            const body = document.body;
-            body.classList.toggle("light-mode");
-            if (body.classList.contains("light-mode")) {
-                body.style.backgroundColor = "#f1f1f1"; // Light background
-                body.style.color = "#1e1e2f"; // Dark text
-            } else {
-                body.style.backgroundColor = "#1e1e2f"; // Dark background
-                body.style.color = "#f1f1f1"; // Light text
-            }
+        function changeTheme() {
+            const selectedTheme = document.getElementById('themeSelector').value;
+            document.body.style.background = selectedTheme; // Set the background to the selected gradient
+            document.querySelector('.container').style.background = selectedTheme; // Set container background to match
         }
 
         function showPopup() {
