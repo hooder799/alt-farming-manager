@@ -124,7 +124,7 @@
             background-color: #45a29e;
             color: #f1f1f1;
             cursor: pointer;
-            width: 40%;
+            width: 40%; /* For larger buttons */
         }
 
         button:hover {
@@ -168,18 +168,25 @@
             background-color: #66fcf1;
         }
 
-        .fullscreen-btn {
-            position: absolute;
-            top: -5px; /* Moved higher from 0px to -5px */
-            left: 3px;
-            z-index: 3;
-        }
-
+        .fullscreen-btn,
         .refresh-btn {
             position: absolute;
-            top: -5px; /* Moved higher from 0px to -5px */
-            right: 3px;
-            z-index: 3;
+            top: -5px; /* Keep the top position */
+            width: 40px; /* Fixed width for a smaller button size */
+            height: 30px; /* Fixed height for a smaller button size */
+            padding: 0; /* Remove padding for a smaller button */
+            font-size: 12px; /* Adjust font size */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Slight rounding for aesthetics */
+            background-color: #45a29e; /* Background color */
+            color: #f1f1f1; /* Text color */
+            cursor: pointer; /* Pointer cursor */
+            z-index: 10;
+        }
+
+        .fullscreen-btn:hover,
+        .refresh-btn:hover {
+            background-color: #66fcf1; /* Change color on hover */
         }
 
         @media (max-width: 600px) {
