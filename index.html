@@ -46,6 +46,7 @@
             margin-top: 10px;
             border-radius: 10px;
             overflow: hidden;
+            position: relative; /* So buttons can be positioned above iframe */
         }
 
         #mainIframe {
@@ -160,6 +161,20 @@
             background-color: #66fcf1;
         }
 
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+        }
+
+        .refresh-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+
         @media (max-width: 600px) {
             h1 {
                 font-size: 24px;
@@ -194,6 +209,8 @@
 
         <div id="mainScreen" class="hidden">
             <div id="iframeContainer">
+                <button class="refresh-btn" onclick="refreshMainIframe()">Refresh</button>
+                <button class="fullscreen-btn" onclick="toggleFullscreenMain()">Fullscreen</button>
                 <iframe id="mainIframe" src="https://sploop.io/" onload="checkIframeLoad()"></iframe>
             </div>
 
@@ -329,6 +346,20 @@
         function autoScrollAltContainer() {
             const altContainer = document.getElementById('altContainer');
             altContainer.scrollTop = altContainer.scrollHeight;
+        }
+
+        function toggleFullscreenMain() {
+            if (!document.fullscreenElement) {
+                document.getElementById('iframeContainer').requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function refreshMainIframe() {
+            iframe.src = iframe.src; // Reload the main iframe
         }
 
         function toggleFullscreen(element) {
