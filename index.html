@@ -47,6 +47,9 @@
             border-radius: 10px;
             overflow: hidden;
             position: relative; /* So buttons can be positioned above iframe */
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #mainIframe {
@@ -54,6 +57,18 @@
             height: 100%;
             border: none;
             border-radius: 10px;
+        }
+
+        #iframeError {
+            color: red;
+            display: none;
+            text-align: center;
+        }
+
+        #loadingIndicator {
+            color: #66fcf1;
+            display: none;
+            text-align: center;
         }
 
         #controls {
@@ -103,14 +118,6 @@
             border: none;
             border-radius: 5px;
             transition: background-color 0.3s ease, transform 0.2s;
-        }
-
-        input[type="number"],
-        select {
-            flex: 1;
-            background-color: #2c2c3e;
-            color: #f1f1f1;
-            border: 1px solid #66fcf1;
         }
 
         button {
@@ -211,10 +218,10 @@
             <div id="iframeContainer">
                 <button class="refresh-btn" onclick="refreshMainIframe()">Refresh</button>
                 <button class="fullscreen-btn" onclick="toggleFullscreenMain()">Fullscreen</button>
+                <div id="loadingIndicator">Loading...</div>
                 <iframe id="mainIframe" src="https://sploop.io/" onload="checkIframeLoad()"></iframe>
+                <div id="iframeError">Failed to load the content. Check the URL.</div>
             </div>
-
-            <div id="iframeError" style="color: red; display: none; text-align: center;">Failed to load the content. Check the URL.</div>
 
             <div id="controls">
                 <select id="gameSelector">
@@ -247,7 +254,7 @@
             </div>
         </div>
 
-        <div class="theme">
+        <div class="theme hidden">
             <button class="theme-button" onclick="toggleTheme()">Toggle Dark/Light Mode</button>
         </div>
 
@@ -259,22 +266,36 @@
     <script>
         let altCount = 0; // Current number of alts
         const iframe = document.getElementById('mainIframe');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const iframeError = document.getElementById('iframeError');
 
         function checkIframeLoad() {
-            // This function checks if the iframe loaded correctly
+            loadingIndicator.style.display = 'none'; // Hide loading indicator when loading completes
             if (iframe.contentWindow.location.href === 'about:blank') {
-                document.getElementById('iframeError').style.display = 'block';
+                iframeError.style.display = 'block';
             } else {
-                document.getElementById('iframeError').style.display = 'none';
+                iframeError.style.display = 'none';
             }
         }
 
         document.getElementById('enter').addEventListener('click', function () {
             document.getElementById('passwordScreen').classList.add('hidden');
             document.getElementById('mainScreen').classList.remove('hidden');
-            // Set initial game URL for the main iframe (already set above to Sploop.io)
-            iframe.src = "https://sploop.io/";
+            // Set initial game URL for the main iframe
+            loadIframe("https://sploop.io/");
         });
+
+        function loadIframe(src) {
+            loadingIndicator.style.display = 'block'; // Show the loading indicator when starting to load
+            iframe.src = src;
+
+            // Retry loading after a timeout in case of failure
+            setTimeout(() => {
+                if (iframe.contentWindow.location.href === 'about:blank') {
+                    iframeError.style.display = 'block';
+                }
+            }, 5000); // wait 5 seconds before checking
+        }
 
         document.getElementById('add-alt').addEventListener('click', function () {
             let countToAdd = parseInt(document.getElementById('alt-count').value);
@@ -283,7 +304,7 @@
             if (altCount + countToAdd <= 10) {
                 for (let i = 0; i < countToAdd; i++) {
                     altCount++;
-                    addAlt("https://sploop.io/"); // Set alt frames to start with Sploop.io
+                    addAlt(serverUrl); // Use the selected server URL
                 }
             } else {
                 alert('You can only have up to 10 alts in total.');
@@ -324,7 +345,7 @@
             const refreshButton = document.createElement('button');
             refreshButton.innerText = 'Refresh';
             refreshButton.addEventListener('click', () => {
-                altIframe.src = altIframe.src; // Reload the alt iframe
+                loadAltIframe(altIframe, serverUrl); // Reload the alt iframe
             });
 
             const fullscreenButton = document.createElement('button');
@@ -348,6 +369,14 @@
             altContainer.scrollTop = altContainer.scrollHeight;
         }
 
+        function refreshMainIframe() {
+            loadIframe(iframe.src); // Reload the main iframe
+        }
+
+        function loadAltIframe(altIframe, serverUrl) {
+            altIframe.src = serverUrl; // Reload the alt iframe
+        }
+
         function toggleFullscreenMain() {
             if (!document.fullscreenElement) {
                 document.getElementById('iframeContainer').requestFullscreen().catch(err => {
@@ -356,10 +385,6 @@
             } else {
                 document.exitFullscreen();
             }
-        }
-
-        function refreshMainIframe() {
-            iframe.src = iframe.src; // Reload the main iframe
         }
 
         function toggleFullscreen(element) {
