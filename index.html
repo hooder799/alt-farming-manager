@@ -95,7 +95,6 @@
             padding: 10px;
         }
 
-        input[type="text"],
         input[type="number"],
         button,
         select {
@@ -106,7 +105,6 @@
             transition: background-color 0.3s ease, transform 0.2s;
         }
 
-        input[type="text"],
         input[type="number"],
         select {
             flex: 1;
@@ -191,8 +189,7 @@
         </div>
 
         <div id="passwordScreen">
-            <input type="text" id="userKey" placeholder="Enter Your Key">
-            <button id="enter">Enter</button>
+            <button id="enter">Enter Manager</button>
             <div id="error-message" style="color: red; text-align: center; margin-top: 10px;"></div>
         </div>
 
@@ -223,7 +220,7 @@
         <div class="theme">
             <button class="theme-button" onclick="toggleTheme()">Toggle Dark/Light Mode</button>
         </div>
-        
+
         <div class="useless-buttons">
             <button class="useless-button" onclick="showPopup()">Useless Button</button>
         </div>
@@ -231,7 +228,6 @@
 
     <script>
         let altCount = 0; // Current number of alts
-        let generatedKey = ""; // Variable to store the generated key
         const iframe = document.getElementById('mainIframe');
 
         function checkIframeLoad() {
@@ -244,15 +240,9 @@
         }
 
         document.getElementById('enter').addEventListener('click', function () {
-            const key = document.getElementById('userKey').value;
-
-            if (key) {
-                document.getElementById('passwordScreen').classList.add('hidden');
-                document.getElementById('mainScreen').classList.remove('hidden');
-                iframe.src = document.getElementById('gameSelector').value; // Set the initial game URL
-            } else {
-                document.getElementById('error-message').innerText = "Please enter a key!";
-            }
+            document.getElementById('passwordScreen').classList.add('hidden');
+            document.getElementById('mainScreen').classList.remove('hidden');
+            iframe.src = document.getElementById('gameSelector').value; // Set the initial game URL
         });
 
         document.getElementById('add-alt').addEventListener('click', function () {
@@ -282,8 +272,8 @@
 
             // Add an identifier label for each alt
             const altLabel = document.createElement('div');
-            altLabel.innerText = `Alt ${altCount}`; 
-            altLabel.style.textAlign = 'center'; 
+            altLabel.innerText = `Alt ${altCount}`;
+            altLabel.style.textAlign = 'center';
             altFrame.appendChild(altLabel);
 
             // Controls for each alt
