@@ -48,15 +48,33 @@
             overflow: hidden;
             position: relative; /* So buttons can be positioned above iframe */
             display: flex;
-            justify-content: flex-end; /* Align buttons to the right */
-            align-items: flex-start; /* Align buttons towards the start */
+            align-items: center; /* Center buttons vertically */
+            flex-direction: column; /* Stack buttons vertically */
         }
 
         .button-container {
-            display: flex; /* Flex container for buttons */
+            display: flex;
+            justify-content: center; /* Center buttons horizontally */
             position: absolute; /* Position buttons over iframe */
-            top: -5px; /* Adjust according to preference */
-            right: 10px; /* Space from the right */
+            top: 10px; /* Adjust position from top */
+        }
+
+        .refresh-btn,
+        .fullscreen-btn {
+            padding: 5px 10px; /* Add padding for better sizing */
+            font-size: 14px; /* Increase font size for better visibility */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Slight rounding for aesthetics */
+            background-color: #45a29e; /* Background color */
+            color: #f1f1f1; /* Text color */
+            cursor: pointer; /* Pointer cursor */
+            margin: 0 5px; /* Space between buttons */
+            text-align: center; /* Center text */
+        }
+
+        .refresh-btn:hover,
+        .fullscreen-btn:hover {
+            background-color: #66fcf1; /* Change color on hover */
         }
 
         #mainIframe {
@@ -175,26 +193,6 @@
             background-color: #66fcf1;
         }
 
-        .fullscreen-btn,
-        .refresh-btn {
-            width: 40px; /* Fixed width for a smaller button size */
-            height: 30px; /* Fixed height for a smaller button size */
-            padding: 0; /* Remove padding for a smaller button */
-            font-size: 12px; /* Adjust font size */
-            border: none; /* Remove border */
-            border-radius: 5px; /* Slight rounding for aesthetics */
-            background-color: #45a29e; /* Background color */
-            color: #f1f1f1; /* Text color */
-            cursor: pointer; /* Pointer cursor */
-            margin-left: 5px; /* Space between buttons */
-            text-align: center; /* Center text */
-        }
-
-        .fullscreen-btn:hover,
-        .refresh-btn:hover {
-            background-color: #66fcf1; /* Change color on hover */
-        }
-
         @media (max-width: 600px) {
             h1 {
                 font-size: 24px;
@@ -230,8 +228,8 @@
         <div id="mainScreen" class="hidden">
             <div id="iframeContainer">
                 <div class="button-container">
-                    <button class="refresh-btn" onclick="refreshMainIframe()">R</button>
-                    <button class="fullscreen-btn" onclick="toggleFullscreenMain()">FS</button>
+                    <button class="refresh-btn" onclick="refreshMainIframe()">Refresh</button>
+                    <button class="fullscreen-btn" onclick="toggleFullscreenMain()">Fullscreen</button>
                 </div>
                 <div id="loadingIndicator">Loading...</div>
                 <iframe id="mainIframe" src="https://sploop.io/" onload="checkIframeLoad()"></iframe>
