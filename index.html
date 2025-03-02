@@ -170,14 +170,14 @@
 
         .fullscreen-btn {
             position: absolute;
-            top: 5px; /* Moved higher from 10px to 5px */
+            top: 0px; /* Changed to 0px to move up */
             left: 10px;
             z-index: 10;
         }
 
         .refresh-btn {
             position: absolute;
-            top: 5px; /* Moved higher from 10px to 5px */
+            top: 0px; /* Changed to 0px to move up */
             right: 10px;
             z-index: 10;
         }
@@ -299,7 +299,7 @@
 
         document.getElementById('add-alt').addEventListener('click', function () {
             let countToAdd = parseInt(document.getElementById('alt-count').value);
-            const serverUrl = document.getElementById('gameSelector').value; // Get selected game URL
+            const serverUrl = document.getElementById('gameSelector').value; // Get chosen server URL
 
             if (altCount + countToAdd <= 10) {
                 for (let i = 0; i < countToAdd; i++) {
