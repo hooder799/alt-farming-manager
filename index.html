@@ -1,272 +1,423 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sploop IO Alt Farming Manager</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="polyfills.js"></script>
-    <script src="runtime.js"></script>
-    <script src="main.js"></script>
-    <script src="page_api.js"></script>
+    <title>Alt Farming Manager</title>
     <style>
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #f1f1f1; /* Light text */
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+            transition: background 0.5s ease; /* Smooth transition for background */
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             width: 90%;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            height: 90vh;
+            border-radius: 15px;
+            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: auto;
+            background: linear-gradient(135deg, #2c2c3e, #3c3c4f);
+            border: 1px solid #66fcf1;
         }
 
         h1 {
             text-align: center;
-            color: #333;
+            color: #66fcf1;
+            margin: 0 0 20px 0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         #iframeContainer {
-            display: flex; /* Allow side-by-side layout */
-            justify-content: space-between; /* Space between frames */
             width: 100%;
-            height: 60vh;
-            margin: 20px 0;
-        }
-
-        .frame {
-            flex: 1; /* Allow frames to take up equal space */
-            margin: 0 10px; /* Space between the frames */
-            border: 1px solid black;
+            height: 70vh;
+            margin-top: 10px;
+            border-radius: 10px;
             overflow: hidden;
+            position: relative; /* So buttons can be positioned above iframe */
+            display: flex;
+            align-items: center; /* Center buttons vertically */
+            flex-direction: column; /* Stack buttons vertically */
         }
 
-        .frame iframe {
+        .button-container {
+            display: flex;
+            justify-content: center; /* Center buttons horizontally */
+            position: absolute; /* Position buttons over iframe */
+            top: 10px; /* Adjust position from top */
+        }
+
+        .refresh-btn,
+        .fullscreen-btn {
+            padding: 5px 10px; /* Add padding for better sizing */
+            font-size: 14px; /* Increase font size for better visibility */
+            border: none; /* Remove border */
+            border-radius: 5px; /* Slight rounding for aesthetics */
+            background-color: #45a29e; /* Background color */
+            color: #f1f1f1; /* Text color */
+            cursor: pointer; /* Pointer cursor */
+            margin: 0 5px; /* Space between buttons */
+            text-align: center; /* Center text */
+        }
+
+        .refresh-btn:hover,
+        .fullscreen-btn:hover {
+            background-color: #66fcf1; /* Change color on hover */
+        }
+
+        #mainIframe {
             width: 100%;
             height: 100%;
             border: none;
+            border-radius: 10px;
+        }
+
+        #iframeError {
+            color: red;
+            display: none;
+            text-align: center;
+        }
+
+        #loadingIndicator {
+            color: #66fcf1;
+            display: none;
+            text-align: center;
         }
 
         #controls {
             text-align: center;
             margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #altContainer {
+            margin-top: 20px;
+            height: 400px;
+            overflow-y: auto;
+            border-radius: 10px;
+            background: #3c3c4f;
+            padding: 10px;
         }
 
         .altFrame {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 10px auto;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #66fcf1;
+            border-radius: 10px;
+            background-color: #3c3c4f;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .altFrame iframe {
             width: 100%;
-            background-color: #e9ecef;
+            height: 300px;
+            border: none;
+            border-radius: 10px;
         }
 
         .altControls {
-            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
         }
 
-        input[type="text"],
         input[type="number"],
-        button {
+        button,
+        select {
             padding: 10px;
             margin: 5px;
-            border: 1px solid #007bff;
+            border: none;
             border-radius: 5px;
-            width: 80%;
-            max-width: 300px;
+            transition: background-color 0.3s ease, transform 0.2s;
         }
 
         button {
-            background-color: #007bff;
-            color: white;
+            background-color: #45a29e;
+            color: #f1f1f1;
             cursor: pointer;
+            width: 40%; /* For larger buttons */
         }
 
         button:hover {
-            background-color: #0056b3;
+            background-color: #66fcf1;
+            transform: scale(1.05);
         }
 
         .hidden {
             display: none;
         }
 
-        #adminConsole {
-            margin-top: 20px;
-            background-color: #f8f9fa;
-            border: 1px solid #007bff;
-            padding: 10px;
+        .useless-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .useless-button {
+            background-color: #ff5555;
+            color: white;
+            border: none;
             border-radius: 5px;
+            margin: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .useless-button:hover {
+            background-color: #c70000;
+        }
+
+        .theme-button {
+            padding: 10px;
+            background-color: #45a29e;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .theme-button:hover {
+            background-color: #66fcf1;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            #controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            button,
+            select {
+                width: 100%;
+                margin: 5px 0;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>Welcome to Alt Farming Manager</h1>
+        <h1>Alt Farming Manager</h1>
+
+        <div class="useless-buttons">
+            <button class="useless-button" onclick="showPopup()">Useless Button</button>
+        </div>
+
         <div id="passwordScreen">
-            <input type="text" id="userKey" placeholder="Enter Your Key">
-            <button id="generate">Generate Key</button>
-            <button id="enter">Enter</button>
+            <button id="enter">Enter Manager</button>
             <div id="error-message" style="color: red; text-align: center; margin-top: 10px;"></div>
         </div>
 
         <div id="mainScreen" class="hidden">
             <div id="iframeContainer">
-                <div class="frame">
-                    <iframe id="mainIframe" src="https://moomoo.io/?server=miami:DG"></iframe>
+                <div class="button-container">
+                    <button class="refresh-btn" onclick="refreshMainIframe()">Refresh</button>
+                    <button class="fullscreen-btn" onclick="toggleFullscreenMain()">Fullscreen</button>
                 </div>
-                <div class="frame">
-                    <h3>VPN</h3>
-                    <div id="vpnControls">
-                        <button id="connectVpn">Connect to VPN</button>
-                        <button id="disconnectVpn">Disconnect from VPN</button>
-                        <div id="vpnStatus" style="margin-top: 10px;">VPN Status: Disconnected</div>
-                        <select id="vpnLocation">
-                            <!-- Populate with location options from ZenMate -->
-                            <option value="us">United States</option>
-                            <option value="uk">United Kingdom</option>
-                            <option value="de">Germany</option>
-                            <!-- Add more locations as needed -->
-                        </select>
-                    </div>
-                </div>
+                <div id="loadingIndicator">Loading...</div>
+                <iframe id="mainIframe" src="" onload="checkIframeLoad()"></iframe>
+                <div id="iframeError">Failed to load the content. Check the URL.</div>
             </div>
 
             <div id="controls">
-                <label for="alt-count">Number of Alts:</label>
-                <input type="number" id="alt-count" value="1" min="1" max="3">
-                <button id="add-alt">Add Alt</button>
+                <select id="gameSelector">
+                    <option value="https://moomoo.io/?server=miami:ZP">Moomoo.io</option>
+                    <option value="https://sploop.io/">Sploop.io</option>
+                    <option value="https://diep.io/">Diep.io</option>
+                    <option value="https://taming.io/">Taming.io</option>
+                </select>
+                <input type="number" id="alt-count" value="1" min="1" max="10"> <!-- Allow up to 10 alts -->
+                <button id="add-alt">Add</button>
             </div>
 
             <div id="altContainer">
+                <h2 style="text-align: center;">Added Alts</h2>
                 <!-- Alt iframes will be added here -->
+            </div>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <label for="themeSelector">Select Theme:</label>
+                <select id="themeSelector" onchange="changeTheme()">
+                    <option value="linear-gradient(to right, #2c3e50, #4ca1af)">Dark Blue</option>
+                    <option value="linear-gradient(to right, #000000, #434343)">Black & Gray</option>
+                    <option value="linear-gradient(to right, #ff416c, #ff4b2b)">Red & Orange</option>
+                    <option value="linear-gradient(to right, #00c6ff, #0072ff)">Blue</option>
+                    <option value="linear-gradient(to right, #00b09b, #96c93d)">Green</option>
+                    <option value="linear-gradient(to right, #1c1c1c, #3b3b3b)">Dark Gray</option>
+                    <option value="linear-gradient(to right, #ff5e62, #ffb199)">Soft Pink</option>
+                    <option value="linear-gradient(to right, #4facfe, #00f2fe)">Discord Blue</option>
+                </select>
             </div>
         </div>
 
-        <div id="promoCodeContainer" style="text-align: center; margin-top: 20px;">
-            <input type="text" id="promoCodeInput" placeholder="paycode">
-            <button id="submitPromoCode">Submit</button>
+        <div class="theme hidden">
+            <button class="theme-button" onclick="toggleTheme()">Toggle Dark/Light Mode</button>
         </div>
 
-        <div id="adminConsole" class="hidden">
-            <h3>Admin Console</h3>
-            <p id="storedKey">Generated Key: None</p>
+        <div class="useless-buttons">
+            <button class="useless-button" onclick="showPopup()">Useless Button</button>
         </div>
     </div>
 
     <script>
-        const webhookURL = "https://discord.com/api/webhooks/1345425565544611984/Zjx5Th52IjeX8mZOp-CTsMozm54Kq-HMjx49-YUI5v26HPu2z74_6q9MQLZ5tIfcFQX4"; // Replace with your Discord webhook URL
         let altCount = 0; // Current number of alts
-        let generatedKey = ""; // Variable to store the generated key
+        const iframe = document.getElementById('mainIframe');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+        const iframeError = document.getElementById('iframeError');
 
-        // Function to send key to Discord
-        function sendKeyToDiscord(key) {
-            fetch(webhookURL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: `Key Generated: ${key}` })
-            });
+        function checkIframeLoad() {
+            loadingIndicator.style.display = 'none'; // Hide loading indicator when loading completes
+            if (iframe.contentWindow.location.href === 'about:blank') {
+                iframeError.style.display = 'block';
+            } else {
+                iframeError.style.display = 'none';
+            }
         }
 
-        // Function to generate a random key
-        function generateRandomKey() {
-            return Math.random().toString(36).slice(2, 10); // Generates a random alphanumeric key
-        }
-
-        document.getElementById('generate').addEventListener('click', function() {
-            generatedKey = generateRandomKey();
-
-            // Send the key to the Discord webhook
-            sendKeyToDiscord(generatedKey);
-            document.getElementById('storedKey').innerText = `Generated Key: ${generatedKey}`;
-            document.getElementById('adminConsole').classList.remove('hidden');
-            alert("Key has been generated and sent to the webhook.");
+        document.getElementById('enter').addEventListener('click', function () {
+            document.getElementById('passwordScreen').classList.add('hidden');
+            document.getElementById('mainScreen').classList.remove('hidden');
+            loadIframe("https://sploop.io/");
         });
 
-        document.getElementById('enter').addEventListener('click', function() {
-            const key = document.getElementById('userKey').value;
+        function loadIframe(src) {
+            loadingIndicator.style.display = 'block'; // Show loading indicator when starting to load
+            iframe.src = src;
+            // Retry loading after a timeout in case of failure
+            setTimeout(() => {
+                if (iframe.contentWindow.location.href === 'about:blank') {
+                    iframeError.style.display = 'block';
+                }
+            }, 5000); // wait 5 seconds before checking
+        }
 
-            if (key === generatedKey) {
-                // Allow access to the alt manager
-                sendKeyToDiscord(`User Entered Key: ${key}`);
-                document.getElementById('passwordScreen').classList.add('hidden');
-                document.getElementById('mainScreen').classList.remove('hidden');
+        document.getElementById('add-alt').addEventListener('click', function () {
+            let countToAdd = parseInt(document.getElementById('alt-count').value);
+            const serverUrl = document.getElementById('gameSelector').value; // Get selected game URL
+
+            if (altCount + countToAdd <= 10) {
+                for (let i = 0; i < countToAdd; i++) {
+                    altCount++;
+                    addAlt(serverUrl); // Use the selected server URL
+                }
             } else {
-                document.getElementById('error-message').innerText = "Invalid key!";
+                alert('You can only have up to 10 alts in total.');
             }
         });
 
-        document.getElementById('add-alt').addEventListener('click', function() {
-            if (altCount < 3) {
-                altCount++;
-                addAlt();
-            } else {
-                alert('You can only have 3 alts at a time.');
-            }
-        });
-
-        function addAlt() {
+        function addAlt(serverUrl) {
             const altContainer = document.getElementById('altContainer');
-            const serverUrl = document.getElementById('mainIframe').src;
 
             const altFrame = document.createElement('div');
             altFrame.classList.add('altFrame');
 
+            // Create the alt iframe
             const altIframe = document.createElement('iframe');
-            altIframe.src = serverUrl; // Connect to the same server
+            altIframe.src = serverUrl;
             altFrame.appendChild(altIframe);
 
+            // Add an identifier label for each alt
+            const altLabel = document.createElement('div');
+            altLabel.innerText = `Alt ${altCount}`;
+            altLabel.style.textAlign = 'center';
+            altFrame.appendChild(altLabel);
+
+            // Controls for each alt
             const altControls = document.createElement('div');
             altControls.className = 'altControls';
 
             const deleteButton = document.createElement('button');
             deleteButton.innerText = 'Delete Alt';
             deleteButton.addEventListener('click', () => {
-                altFrame.remove();
-                altCount--;
+                if (confirm('Are you sure you want to delete this alt?')) {
+                    altFrame.remove();
+                    altCount--;
+                    autoScrollAltContainer();
+                }
+            });
+
+            const refreshButton = document.createElement('button');
+            refreshButton.innerText = 'Refresh';
+            refreshButton.addEventListener('click', () => {
+                loadAltIframe(altIframe, serverUrl); // Reload the alt iframe
+            });
+
+            const fullscreenButton = document.createElement('button');
+            fullscreenButton.innerText = 'Toggle Fullscreen';
+            fullscreenButton.className = 'fullscreenButton';
+            fullscreenButton.addEventListener('click', function () {
+                toggleFullscreen(altIframe);
             });
 
             altControls.appendChild(deleteButton);
+            altControls.appendChild(refreshButton);
+            altControls.appendChild(fullscreenButton);
             altFrame.appendChild(altControls);
             altContainer.appendChild(altFrame);
+
+            autoScrollAltContainer();
         }
 
-        // VPN controls
-        document.getElementById('connectVpn').addEventListener('click', function() {
-            const selectedLocation = document.getElementById('vpnLocation').value;
-            // Logic to connect to the VPN would go here (using ZenMate's methods)
-            document.getElementById('vpnStatus').innerText = `VPN Status: Connected to ${selectedLocation}`;
-            alert(`Connected to VPN in ${selectedLocation}`); // Placeholder for actual connection logic
-        });
+        function autoScrollAltContainer() {
+            const altContainer = document.getElementById('altContainer');
+            altContainer.scrollTop = altContainer.scrollHeight;
+        }
 
-        document.getElementById('disconnectVpn').addEventListener('click', function() {
-            // Logic to disconnect from VPN would go here
-            document.getElementById('vpnStatus').innerText = `VPN Status: Disconnected`;
-            alert('Disconnected from VPN');
-        });
+        function refreshMainIframe() {
+            loadIframe(iframe.src); // Reload the main iframe
+        }
 
-        // Promo code functionality
-        document.getElementById('submitPromoCode').addEventListener('click', function() {
-            const promoCode = document.getElementById('promoCodeInput').value;
+        function loadAltIframe(altIframe, serverUrl) {
+            altIframe.src = serverUrl; // Reload the alt iframe
+        }
 
-            if (promoCode === "adminconsole") {
-                document.getElementById('adminConsole').classList.remove('hidden');
-                alert("Admin console unlocked!");
+        function toggleFullscreenMain() {
+            if (!document.fullscreenElement) {
+                document.getElementById('iframeContainer').requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
             } else {
-                alert("Invalid promo code.");
+                document.exitFullscreen();
             }
-        });
+        }
+
+        function toggleFullscreen(element) {
+            if (!document.fullscreenElement) {
+                element.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function changeTheme() {
+            const selectedTheme = document.getElementById('themeSelector').value;
+            document.body.style.background = selectedTheme; // Set the background to the selected gradient
+            document.querySelector('.container').style.background = selectedTheme; // Set container background to match
+        }
+
+        function showPopup() {
+            alert("This is a button that takes space so you are able to see every game frame on the screen");
+        }
     </script>
 </body>
+
 </html>
