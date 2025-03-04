@@ -193,6 +193,27 @@
             background-color: #66fcf1;
         }
 
+        #view-count {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #reviews {
+            margin-top: 20px;
+        }
+
+        .review {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #66fcf1;
+            border-radius: 10px;
+            background-color: #3c3c4f;
+        }
+
+        .review-rating {
+            font-weight: bold;
+        }
+
         @media (max-width: 600px) {
             h1 {
                 font-size: 24px;
@@ -265,6 +286,20 @@
                     <option value="linear-gradient(to right, #4facfe, #00f2fe)">Discord Blue</option>
                 </select>
             </div>
+
+            <div id="view-count">
+                <p>View Count: <span id="view-count-number">0</span></p>
+            </div>
+
+            <div id="reviews">
+                <h2>Reviews</h2>
+                <form id="review-form">
+                    <input type="number" id="rating" min="1" max="5" required>
+                    <textarea id="review-text" required></textarea>
+                    <button type="submit">Submit Review</button>
+                </form>
+                <div id="review-list"></div>
+            </div>
         </div>
 
         <div class="theme hidden">
@@ -281,6 +316,8 @@
         const iframe = document.getElementById('mainIframe');
         const loadingIndicator = document.getElementById('loadingIndicator');
         const iframeError = document.getElementById('iframeError');
+        let viewCount = 0;
+        const reviewList = document.getElementById('review-list');
 
         function checkIframeLoad() {
             loadingIndicator.style.display = 'none'; // Hide loading indicator when loading completes
@@ -295,6 +332,7 @@
             document.getElementById('passwordScreen').classList.add('hidden');
             document.getElementById('mainScreen').classList.remove('hidden');
             loadIframe("https://sploop.io/");
+            incrementViewCount();
         });
 
         function loadIframe(src) {
@@ -417,6 +455,26 @@
         function showPopup() {
             alert("This is a button that takes space so you are able to see every game frame on the screen");
         }
+
+        function incrementViewCount() {
+            viewCount++;
+            document.getElementById('view-count-number').innerText = viewCount;
+        }
+
+        document.getElementById('review-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+            const rating = document.getElementById('rating').value;
+            const reviewText = document.getElementById('review-text').value;
+            const review = document.createElement('div');
+            review.classList.add('review');
+            review.innerHTML = `
+                <p class="review-rating">Rating: ${rating}/5</p>
+                <p>${reviewText}</p>
+            `;
+            reviewList.appendChild(review);
+            document.getElementById('rating').value = '';
+            document.getElementById('review-text').value = '';
+        });
     </script>
 </body>
 
